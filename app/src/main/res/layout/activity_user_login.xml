@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".user_login">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="155dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/app_logo1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="30dp">
+
+            <EditText
+                android:id="@+id/userNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:ems="10"
+                android:hint="@string/emailHintText"
+                android:inputType="textPersonName" />
+
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:ems="10"
+                android:hint="@string/passwordText"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/ingresarBtn"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginBottom="15dp"
+                android:onClick="validarCredenciales"
+
+                android:background="@drawable/loginbuttonstylesecundary"
+                android:shadowColor="#A8A8A8"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="0"
+                android:text="@string/loginButtonText"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/forgotPassTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="@string/forgotPasswordText"
+                android:onClick="olvidoContrasenia"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:gravity="center"
+                android:text="- ó -"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/ingresarFacebookBtn"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="ingresarConFacebook"
+
+                android:background="@drawable/facebook_button_style"
+                android:drawableLeft="@drawable/facebook_logo_25"
+                android:paddingLeft="20dp"
+                android:shadowColor="#A8A8A8"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="0"
+                android:text="@string/ingresarConFacebookText"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

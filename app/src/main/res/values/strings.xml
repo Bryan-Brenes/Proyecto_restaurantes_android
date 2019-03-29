@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Restaurantes</string>
+    <string name="loginButtonText">Ingresar</string>
+    <string name="signUpButtonText">Registrarse</string>
+    <string name="passwordText">contraseña</string>
+    <string name="userText">nombre de usuario</string>
+    <string name="forgotPasswordText">¿olvidó su contraseña?</string>
+    <string name="ingresarConFacebookText">Ingresar con Facebook</string>
+    <string name="emailHintText">email</string>
+    <string name="crearCuentaText">Crear cuenta</string>
+    <string name="confirmarPassword">confirmar contraseña</string>
+</resources>

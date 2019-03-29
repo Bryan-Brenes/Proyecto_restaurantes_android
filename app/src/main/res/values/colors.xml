@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#814F2F</color> <!-- anterior: #008577 -->
+    <color name="colorPrimaryDark">#401617</color> <!-- anterior: #00574B -->
+    <color name="colorAccent">#94AA3B</color> <!-- anterior: #D81B60 -->
+    <color name="colorSecundary">#DBC8A4</color>
+    <color name="facebookColor">#4267B2</color>
+</resources>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:paddingTop="0dp"
+            android:src="@drawable/app_logo1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="40dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="30dp">
+
+            <Button
+                android:text="@string/signUpButtonText"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/loginbuttonstylesecundary"
+                android:shadowColor="#A8A8A8"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="0"
+                android:layout_marginBottom="20dp"
+                android:onClick="abrirPantallas"/>
+
+            <Button
+                android:id="@+id/loginBtn"
+                android:text="@string/loginButtonText"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/loginbuttonstyle"
+                android:shadowColor="#A8A8A8"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="0"
+                android:onClick="abrirPantallas"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
