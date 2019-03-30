@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position){
                 case 0:
-                    MapTabFragment mapFragment = new MapTabFragment();
+                    mapFragment mapFragment = new mapFragment();
                     return mapFragment;
                 case 1:
                     RestListTabFragment restListFragment = new RestListTabFragment();

@@ -8,10 +8,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
+
+/*
+* Clase utilizada para mostrar de una manera determinada los itemes de un listView
+* Va a contener una imagen del restaurante, nombre, ubicacion y una imagen para la calificacion
+* basada en estrellas.
+*
+* El código se basó en el código presente en la página:
+* https://www.journaldev.com/10416/android-listview-with-custom-adapter-example-tutorial
+* */
 
 public class CustomArrayAdapter extends ArrayAdapter<ModeloDatoRestaurante> {
 
