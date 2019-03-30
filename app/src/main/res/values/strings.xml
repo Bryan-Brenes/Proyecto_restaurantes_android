@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Restaurantes</string>
+    <string name="loginActivityName">Food Court</string>
+    <string name="userLoginActivityName">Ingreso de usuario</string>
+    <string name="userSignUpActivityName">Registro de usuario</string>
     <string name="loginButtonText">Ingresar</string>
     <string name="signUpButtonText">Registrarse</string>
     <string name="passwordText">contraseña</string>
@@ -9,4 +12,10 @@
     <string name="emailHintText">email</string>
     <string name="crearCuentaText">Crear cuenta</string>
     <string name="confirmarPassword">confirmar contraseña</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Mapa</string>
+    <string name="tab_text_2">Lista</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
