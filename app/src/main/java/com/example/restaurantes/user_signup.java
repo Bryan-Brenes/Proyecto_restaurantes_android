@@ -13,6 +13,11 @@ public class user_signup extends AppCompatActivity {
     }
 
     public void crearCuenta(View view){
+
         System.out.println("Crear cuenta");
+    }
+
+    public boolean validarCampos(){
+        return false;
     }
 }
