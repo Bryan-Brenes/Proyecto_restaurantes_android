@@ -1,5 +1,6 @@
 package com.example.restaurantes;
 
+import android.content.Intent;
 import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String token;
+    private String email;
+    private String nombre;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -45,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        token = getIntent().getStringExtra("token");
+        nombre = getIntent().getStringExtra("name");
+        email = getIntent().getStringExtra("email");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -60,12 +70,18 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
+        // Aqui va el intent para ir a la pantalla de nuevo restaurante
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Log.e("fab", "Se presionó agregar nuevo restaurante");
+                Intent intent = new Intent(getApplicationContext(), NuevoRestauranteActivity.class);
+                intent.putExtra("token", token);
+                intent.putExtra("name", nombre);
+                intent.putExtra("email", email);
+                intent.putExtra("accion", "ver");
+                startActivity(intent);
             }
         });
 

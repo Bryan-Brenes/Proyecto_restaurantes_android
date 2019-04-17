@@ -44,6 +44,7 @@ public class user_signup extends AppCompatActivity {
                     String password = passwordEditText.getText().toString();
                     try{
                         String encryptedPassword = AESCrypt.encrypt(password);
+                        Log.e("pass", encryptedPassword);
                         /*System.out.println(String.format("Password: %s", password));
                         System.out.println(String.format("Encrypted password: %s", encryptedPassword));
                         System.out.println(String.format("Verificacion: %s", encryptedPassword.equals(AESCrypt.encrypt(password))));*/

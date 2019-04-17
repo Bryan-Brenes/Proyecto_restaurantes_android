@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 public class Post_json extends AsyncTask<DatosConsulta, Void, JSONObject> {
 
     public static String REGISTRAR_USUARIO = "https://foodcourtec.herokuapp.com/createUser/";
+    public static String LOGIN_USUARIO = "https://foodcourtec.herokuapp.com/loginUser/";
     public static String OBTENER_COMIDAS = "https://foodcourtec.herokuapp.com/getFoods";
     public static String TEST_URL = "https://data.fixer.io/api/latest";
 
@@ -97,6 +98,18 @@ public class Post_json extends AsyncTask<DatosConsulta, Void, JSONObject> {
         }
 
         return error;
+    }
+
+    public static String verificarSiTieneStatus(JSONObject json){
+        String status = null;
+
+        try{
+            status = json.getString("status");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return status;
     }
 
     /*@Override
