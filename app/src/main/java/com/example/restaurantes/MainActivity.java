@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("token", token);
                 intent.putExtra("name", nombre);
                 intent.putExtra("email", email);
-                intent.putExtra("accion", "ver");
+                intent.putExtra("accion", "nuevo");
                 startActivity(intent);
             }
         });

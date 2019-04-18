@@ -1,6 +1,16 @@
 package com.example.restaurantes;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +38,15 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
     private String accion;
     private String id;
 
+    private Location currentLocation;
+
+    private final int LOCATION_REFRESH_TIME = 2500;
+    private final int LOCATION_REFRESH_DISTANCE = 0;
+
+
+    LocationManager locationManager;
+    LocationListener locationListener;
+
     ImageView imagenRestauranteImageView;
     ImageButton editImageButton;
     EditText nombreEditText;
@@ -43,7 +62,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
     EditText juevesAbreEditText;
     EditText juevesCierraEditText;
     EditText viernesAbreEditText;
-    EditText vienesCierraEditText;
+    EditText viernesCierraEditText;
     EditText sabadoAbreEditText;
     EditText sabadoCierraEditText;
     EditText domingoAbreEditText;
@@ -64,6 +83,48 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         nombre = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");
         accion = getIntent().getStringExtra("accion");
+
+        currentLocation = null;
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                //currentLocation = location;
+                Log.e("location", "entro");
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        };
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 10);
+            }
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
+                    LOCATION_REFRESH_DISTANCE, locationListener);
+        }
+
+
+
+
 
         id = null;
         if (accion.equals("actualizar")){
@@ -86,7 +147,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         juevesAbreEditText = findViewById(R.id.juevesAbreEditText);
         juevesCierraEditText = findViewById(R.id.juevesCierraEditText);
         viernesAbreEditText = findViewById(R.id.viernesAbreEditText);
-        vienesCierraEditText = findViewById(R.id.viernesCierraEditText);
+        viernesCierraEditText = findViewById(R.id.viernesCierraEditText);
         sabadoAbreEditText = findViewById(R.id.sabadoAbreEditText);
         sabadoCierraEditText = findViewById(R.id.sabadoCierraEditText);
         domingoAbreEditText = findViewById(R.id.domingoAbreEditText);
@@ -99,6 +160,21 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         obtenerTiposComida();
         agregarLosTiposAInterfaz();
         habilitarEdicion(accion);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 10:
+                Log.e("location", "entro a onRequestPermission");
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Log.e("location", "entro al if de on request");
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        Log.e("location", "Si ddieron el permiso");
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, locationListener);
+                    }
+                }
+        }
     }
 
     private void habilitarEdicion(String action){
@@ -118,7 +194,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
             juevesAbreEditText.setEnabled(true);
             juevesCierraEditText.setEnabled(true);
             viernesAbreEditText.setEnabled(true);;
-            vienesCierraEditText.setEnabled(true);
+            viernesCierraEditText.setEnabled(true);
             sabadoAbreEditText.setEnabled(true);
             sabadoCierraEditText.setEnabled(true);
             domingoAbreEditText.setEnabled(true);
@@ -141,7 +217,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
             juevesAbreEditText.setEnabled(false);
             juevesCierraEditText.setEnabled(false);
             viernesAbreEditText.setEnabled(false);
-            vienesCierraEditText.setEnabled(false);
+            viernesCierraEditText.setEnabled(false);
             sabadoAbreEditText.setEnabled(false);
             sabadoCierraEditText.setEnabled(false);
             domingoAbreEditText.setEnabled(false);
@@ -229,9 +305,155 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
     }
 
     public void agregarRestaurante(View view){
+
+        Log.e("location", "presionó agregar");
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+
+        if (currentLocation == null){
+            Toast.makeText(this, "No se pudo obtener su localización", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (accion.equals("nuevo")){
             // agregar el restaurante a la base de datos
-            
+
+            if (nombreEditText.getText().toString().equals("") || direccionEditText.getText().toString().equals("")){
+                Toast.makeText(this, "Los campos nombre y dirección son obligatorios", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            JSONObject obj = new JSONObject();
+            try{
+
+                // armando el json de consulta
+                obj.put("token", token);
+                obj.put("email", email);
+                obj.put("name", nombreEditText.getText().toString());
+
+                // json de direccion
+                JSONObject direccion = new JSONObject();
+                direccion.put("lat", currentLocation.getLatitude());
+                direccion.put("long", currentLocation.getLongitude());
+                direccion.put("direction", direccionEditText.getText().toString());
+                obj.put("address", direccion);
+
+                // se agrega telefono al json solo si el usuario ingresó un telefono
+                if (!telefonoEditText.getText().toString().equals("")){
+                    obj.put("number", Integer.valueOf(telefonoEditText.getText().toString()));
+                }
+
+                // se agrega página web solo si el usuario lo indicó
+                if (!paginaWebEditText.getText().toString().equals("")){
+                    obj.put("webPage", paginaWebEditText.getText().toString());
+                }
+
+                // Array de comidas
+                JSONArray tipoComidasSeleccionadas = new JSONArray();
+                for (CheckBox checkBox: checkBoxesTiposComida){
+                    if (checkBox.isChecked()){
+                        tipoComidasSeleccionadas.put(checkBox.getText().toString());
+                    }
+                }
+                if (tipoComidasSeleccionadas.length() != 0){
+                    obj.put("foods", tipoComidasSeleccionadas);
+                }
+
+                // Array de horarios
+                JSONArray horarioArray = new JSONArray();
+
+                // json para lunes
+                JSONObject lunesHorario = new JSONObject();
+                lunesHorario.put("day", "Lunes");
+                lunesHorario.put("open", lunesAbreEditText.getText().toString());
+                lunesHorario.put("close", lunesCierraEditText.getText().toString());
+                horarioArray.put(lunesHorario);
+
+                // json para martes
+                JSONObject martesHorario = new JSONObject();
+                martesHorario.put("day", "Martes");
+                martesHorario.put("open", martesAbreEditText.getText().toString());
+                martesHorario.put("close", martesCierraEditText.getText().toString());
+                horarioArray.put(martesHorario);
+
+                // json para miercoles
+                JSONObject miercolesHorario = new JSONObject();
+                miercolesHorario.put("day", "Miercoles");
+                miercolesHorario.put("open", miercolesAbreEditText.getText().toString());
+                miercolesHorario.put("close", miercolesCierraEditText.getText().toString());
+                horarioArray.put(miercolesHorario);
+
+                // json para jueves
+                JSONObject juevesHorario = new JSONObject();
+                juevesHorario.put("day", "Jueves");
+                juevesHorario.put("open", juevesAbreEditText.getText().toString());
+                juevesHorario.put("close", juevesCierraEditText.getText().toString());
+                horarioArray.put(juevesHorario);
+
+                // json para viernes
+                JSONObject viernesHorario = new JSONObject();
+                viernesHorario.put("day", "Viernes");
+                viernesHorario.put("open", viernesAbreEditText.getText().toString());
+                viernesHorario.put("close", viernesCierraEditText.getText().toString());
+                horarioArray.put(viernesHorario);
+
+                // json para sabado
+                JSONObject sabadoHorario = new JSONObject();
+                sabadoHorario.put("day", "Sabado");
+                sabadoHorario.put("open", sabadoAbreEditText.getText().toString());
+                sabadoHorario.put("close", sabadoCierraEditText.getText().toString());
+                horarioArray.put(sabadoHorario);
+
+                // json para sabado
+                JSONObject domingoHorario = new JSONObject();
+                domingoHorario.put("day", "Domingo");
+                domingoHorario.put("open", domingoAbreEditText.getText().toString());
+                domingoHorario.put("close", domingoCierraEditText.getText().toString());
+                horarioArray.put(domingoHorario);
+
+                obj.put("schedules", horarioArray);
+
+
+                Log.e("rest", obj.toString());
+
+                // falta hacer el request pero hay que ver el tipo de dato date si es necesario
+
+                /*Post_json post = new Post_json();
+                DatosConsulta datos = new DatosConsulta(Post_json.CREAR_RESTAURANTE, obj);
+                JSONObject res = post.execute(datos).get();
+
+                if (res != null){
+                    Log.e("rest", res.toString());
+                    // se verifica que no haya un error con la consulta -------------------------------------------------
+                    String status = Post_json.verificarSiTieneStatus(res);
+                    if (status != null){
+                        Toast.makeText(this, "Datos de usuario incorrectos", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("token", res.getString("token"));
+                        intent.putExtra("name", res.getString("name"));
+                        intent.putExtra("email", email);
+                        Log.e("login",String.format("token: %s\nname: %s", res.getString("token"), res.getString("name")));
+                        startActivity(intent);
+
+                    }
+                } else {
+                    Log.e("url", "respuesta nula");
+                }*/
+
+
+            } catch (JSONException e){
+                e.printStackTrace();
+            } /*catch (InterruptedException e){
+                e.printStackTrace();
+            } catch (ExecutionException e){
+                e.printStackTrace();
+            }*/ catch (Exception e){
+                e.printStackTrace();
+            }
         } else{
             // modificar el restaurante
         }
