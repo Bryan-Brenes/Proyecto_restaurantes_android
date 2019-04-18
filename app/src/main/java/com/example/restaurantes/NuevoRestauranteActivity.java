@@ -7,9 +7,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,11 +30,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class NuevoRestauranteActivity extends AppCompatActivity {
 
+    private static final int PICK_IMAGE = 100;
     private String token;
     private String email;
     private String nombre;
@@ -74,6 +79,9 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
     ArrayList<String> tiposComida;
     ArrayList<CheckBox> checkBoxesTiposComida;
 
+    ArrayList<Uri> imagenesURIArrayList;
+    Uri imageURI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +91,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         nombre = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");
         accion = getIntent().getStringExtra("accion");
+
+        imagenesURIArrayList = new ArrayList<>();
 
         currentLocation = null;
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -419,6 +429,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
                 Log.e("rest", obj.toString());
 
                 // falta hacer el request pero hay que ver el tipo de dato date si es necesario
+                // ver si cuando se agrega un restaurante puede devolver el id para agregar imagenes
 
                 /*Post_json post = new Post_json();
                 DatosConsulta datos = new DatosConsulta(Post_json.CREAR_RESTAURANTE, obj);
@@ -459,7 +470,23 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         }
     }
 
-    public void agregarFoto(View view){
+    public void abrirGaleria(View view){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+            imageURI = data.getData();
+            imagenesURIArrayList.add(imageURI);
+            imagenRestauranteImageView.setImageURI(imageURI);
+        }
+    }
+
+    public void agregarFotos(){
 
     }
 

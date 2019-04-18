@@ -43,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="180dp"
                     android:layout_weight="10"
-                    android:onClick="agregarFoto"
+                    android:onClick="abrirGaleria"
                     app:srcCompat="@drawable/default_rest" />
 
                 <ImageView
