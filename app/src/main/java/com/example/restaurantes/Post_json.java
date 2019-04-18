@@ -28,6 +28,8 @@ public class Post_json extends AsyncTask<DatosConsulta, Void, JSONObject> {
     public static String LOGIN_USUARIO = "https://foodcourtec.herokuapp.com/loginUser/";
     public static String OBTENER_COMIDAS = "https://foodcourtec.herokuapp.com/getFoods";
     public static String CREAR_RESTAURANTE = "https://foodcourtec.herokuapp.com/createRestaurant";
+    public static String REQUEST_CODE = "https://foodcourtec.herokuapp.com/requestCode";
+    public static String RESET_PASSWORD = "https://foodcourtec.herokuapp.com/resetPassword";
     public static String TEST_URL = "https://data.fixer.io/api/latest";
 
     private JSONObject post(String URL_STRING, JSONObject jsonRequest){

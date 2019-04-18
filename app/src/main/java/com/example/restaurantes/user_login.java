@@ -94,6 +94,7 @@ public class user_login extends AppCompatActivity {
     }
 
     public void olvidoContrasenia(View view){
-        System.out.println("olvido contraseña");
+        Intent intent = new Intent(getApplicationContext(), Recuperacion_password.class);
+        startActivity(intent);
     }
 }
