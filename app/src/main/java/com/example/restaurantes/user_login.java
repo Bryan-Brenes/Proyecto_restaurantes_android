@@ -61,9 +61,14 @@ public class user_login extends AppCompatActivity {
                     } else {
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("token", res.getString("token"));
+                        /*intent.putExtra("token", res.getString("token"));
                         intent.putExtra("name", res.getString("name"));
-                        intent.putExtra("email", email);
+                        intent.putExtra("email", email);*/
+
+                        SessionManager.setToken(res.getString("token"));
+                        SessionManager.setNombre(res.getString("name"));
+                        SessionManager.setEmail(email);
+
                         Log.e("login",String.format("token: %s\nname: %s", res.getString("token"), res.getString("name")));
                         startActivity(intent);
 

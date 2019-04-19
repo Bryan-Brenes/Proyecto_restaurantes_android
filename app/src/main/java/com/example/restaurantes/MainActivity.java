@@ -27,9 +27,9 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String token;
+    /*private String token;
     private String email;
-    private String nombre;
+    private String nombre;*/
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        token = getIntent().getStringExtra("token");
+        /*token = getIntent().getStringExtra("token");
         nombre = getIntent().getStringExtra("name");
-        email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("email");*/
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.e("fab", "Se presionó agregar nuevo restaurante");
                 Intent intent = new Intent(getApplicationContext(), NuevoRestauranteActivity.class);
-                intent.putExtra("token", token);
+                /*intent.putExtra("token", token);
                 intent.putExtra("name", nombre);
-                intent.putExtra("email", email);
+                intent.putExtra("email", email);*/
                 intent.putExtra("accion", "nuevo");
                 startActivity(intent);
             }

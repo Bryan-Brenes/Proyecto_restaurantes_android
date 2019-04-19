@@ -176,7 +176,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false"/>
 
                 <TextView
                     android:id="@+id/textView13"
@@ -192,7 +195,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -222,7 +228,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView15"
@@ -238,7 +247,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -268,7 +280,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView19"
@@ -284,7 +299,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -314,7 +332,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView24"
@@ -330,7 +351,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -360,7 +384,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView29"
@@ -376,7 +403,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -406,7 +436,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView34"
@@ -422,7 +455,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 
@@ -452,7 +488,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
                 <TextView
                     android:id="@+id/textView39"
@@ -468,7 +507,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:inputType="time" />
+                    android:onClick="mostrarTimePicker"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:focusable="false" />
 
             </LinearLayout>
 

@@ -1,6 +1,7 @@
 package com.example.restaurantes;
 
 import android.Manifest;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -31,15 +34,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
-public class NuevoRestauranteActivity extends AppCompatActivity {
+public class NuevoRestauranteActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final int PICK_IMAGE = 100;
-    private String token;
+    /*private String token;
     private String email;
-    private String nombre;
+    private String nombre;*/
     private String accion;
     private String id;
 
@@ -48,6 +54,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
     private final int LOCATION_REFRESH_TIME = 2500;
     private final int LOCATION_REFRESH_DISTANCE = 0;
 
+    private EditText editTextSeleccionado;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -87,9 +94,9 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_restaurante);
 
-        token = getIntent().getStringExtra("token");
+        /*token = getIntent().getStringExtra("token");
         nombre = getIntent().getStringExtra("name");
-        email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("email");*/
         accion = getIntent().getStringExtra("accion");
 
         imagenesURIArrayList = new ArrayList<>();
@@ -258,8 +265,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         JSONObject obj = new JSONObject();
         try{
 
-            obj.put("token", token);
-            obj.put("email", email);
+            obj.put("token", SessionManager.getToken());
+            obj.put("email", SessionManager.getEmail());
 
             Post_json post = new Post_json();
             DatosConsulta datos = new DatosConsulta(Post_json.OBTENER_COMIDAS, obj);
@@ -273,6 +280,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
                     Toast.makeText(this, "No se pudo cargar los tipos de comida", Toast.LENGTH_SHORT).show();
                 } else {
 
+                    SessionManager.setToken(res.getString("token")); // se actualiza el token de la sesión
                     JSONArray jsonComidas = res.getJSONArray("foods");
                     if (jsonComidas != null){
                         for (int i = 0; i < jsonComidas.length(); i++){
@@ -339,8 +347,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
             try{
 
                 // armando el json de consulta
-                obj.put("token", token);
-                obj.put("email", email);
+                obj.put("token", SessionManager.getToken());
+                obj.put("email", SessionManager.getEmail());
                 obj.put("name", nombreEditText.getText().toString());
 
                 // json de direccion
@@ -374,56 +382,98 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
                 // Array de horarios
                 JSONArray horarioArray = new JSONArray();
 
+                // boolean para solo agregar horarios si todos los campos estan llenos
+                boolean algunCampoHorarioVacio = false;
+                Long horaApertura = 0L;
+                Long horaCierre = 0L;
+
                 // json para lunes
                 JSONObject lunesHorario = new JSONObject();
+                if (lunesAbreEditText.getText().toString().equals("") || lunesCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(lunesAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(lunesCierraEditText.getText().toString());
                 lunesHorario.put("day", "Lunes");
-                lunesHorario.put("open", lunesAbreEditText.getText().toString());
-                lunesHorario.put("close", lunesCierraEditText.getText().toString());
+                lunesHorario.put("open", horaApertura);
+                lunesHorario.put("close", horaCierre);
                 horarioArray.put(lunesHorario);
 
                 // json para martes
                 JSONObject martesHorario = new JSONObject();
+                if (martesAbreEditText.getText().toString().equals("") || martesCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(martesAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(martesCierraEditText.getText().toString());
                 martesHorario.put("day", "Martes");
-                martesHorario.put("open", martesAbreEditText.getText().toString());
-                martesHorario.put("close", martesCierraEditText.getText().toString());
+                martesHorario.put("open", horaApertura);
+                martesHorario.put("close", horaCierre);
                 horarioArray.put(martesHorario);
 
                 // json para miercoles
                 JSONObject miercolesHorario = new JSONObject();
+                if (miercolesAbreEditText.getText().toString().equals("") || miercolesCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(miercolesAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(miercolesCierraEditText.getText().toString());
                 miercolesHorario.put("day", "Miercoles");
-                miercolesHorario.put("open", miercolesAbreEditText.getText().toString());
-                miercolesHorario.put("close", miercolesCierraEditText.getText().toString());
+                miercolesHorario.put("open", horaApertura);
+                miercolesHorario.put("close", horaCierre);
                 horarioArray.put(miercolesHorario);
 
                 // json para jueves
                 JSONObject juevesHorario = new JSONObject();
+                if (juevesAbreEditText.getText().toString().equals("") || juevesCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(juevesAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(juevesCierraEditText.getText().toString());
                 juevesHorario.put("day", "Jueves");
-                juevesHorario.put("open", juevesAbreEditText.getText().toString());
-                juevesHorario.put("close", juevesCierraEditText.getText().toString());
+                juevesHorario.put("open", horaApertura);
+                juevesHorario.put("close", horaCierre);
                 horarioArray.put(juevesHorario);
 
                 // json para viernes
                 JSONObject viernesHorario = new JSONObject();
+                if (viernesAbreEditText.getText().toString().equals("") || viernesCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(viernesAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(viernesCierraEditText.getText().toString());
                 viernesHorario.put("day", "Viernes");
-                viernesHorario.put("open", viernesAbreEditText.getText().toString());
-                viernesHorario.put("close", viernesCierraEditText.getText().toString());
+                viernesHorario.put("open", horaApertura);
+                viernesHorario.put("close", horaCierre);
                 horarioArray.put(viernesHorario);
 
                 // json para sabado
                 JSONObject sabadoHorario = new JSONObject();
+                if (sabadoAbreEditText.getText().toString().equals("") || sabadoCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(sabadoAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(sabadoCierraEditText.getText().toString());
                 sabadoHorario.put("day", "Sabado");
-                sabadoHorario.put("open", sabadoAbreEditText.getText().toString());
-                sabadoHorario.put("close", sabadoCierraEditText.getText().toString());
+                sabadoHorario.put("open", horaApertura);
+                sabadoHorario.put("close", horaCierre);
                 horarioArray.put(sabadoHorario);
 
-                // json para sabado
+                // json para domingo
                 JSONObject domingoHorario = new JSONObject();
+                if (domingoAbreEditText.getText().toString().equals("") || domingoCierraEditText.getText().toString().equals("")){
+                    algunCampoHorarioVacio = true;
+                }
+                horaApertura = getMinutesFromMidnight(domingoAbreEditText.getText().toString());
+                horaCierre = getMinutesFromMidnight(domingoCierraEditText.getText().toString());
                 domingoHorario.put("day", "Domingo");
-                domingoHorario.put("open", domingoAbreEditText.getText().toString());
-                domingoHorario.put("close", domingoCierraEditText.getText().toString());
+                domingoHorario.put("open", horaApertura);
+                domingoHorario.put("close", horaCierre);
                 horarioArray.put(domingoHorario);
 
-                obj.put("schedules", horarioArray);
+                if (!algunCampoHorarioVacio){
+                    obj.put("schedules", horarioArray);
+                }
 
 
                 Log.e("rest", obj.toString());
@@ -431,7 +481,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
                 // falta hacer el request pero hay que ver el tipo de dato date si es necesario
                 // ver si cuando se agrega un restaurante puede devolver el id para agregar imagenes
 
-                /*Post_json post = new Post_json();
+                Post_json post = new Post_json();
                 DatosConsulta datos = new DatosConsulta(Post_json.CREAR_RESTAURANTE, obj);
                 JSONObject res = post.execute(datos).get();
 
@@ -440,29 +490,30 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
                     // se verifica que no haya un error con la consulta -------------------------------------------------
                     String status = Post_json.verificarSiTieneStatus(res);
                     if (status != null){
-                        Toast.makeText(this, "Datos de usuario incorrectos", Toast.LENGTH_SHORT).show();
-                    } else {
 
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("token", res.getString("token"));
-                        intent.putExtra("name", res.getString("name"));
-                        intent.putExtra("email", email);
-                        Log.e("login",String.format("token: %s\nname: %s", res.getString("token"), res.getString("name")));
-                        startActivity(intent);
+                        if(!status.equals("Restaurant added")){
+                            Toast.makeText(this,"No se pudo agregar el restaurante", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this,"Restaurante agregado", Toast.LENGTH_SHORT).show();
+                            SessionManager.setToken(res.getString("token"));
+                            id = res.getString("id");
+                        }
+
+                    } else {
 
                     }
                 } else {
                     Log.e("url", "respuesta nula");
-                }*/
+                }
 
 
             } catch (JSONException e){
                 e.printStackTrace();
-            } /*catch (InterruptedException e){
+            } catch (InterruptedException e){
                 e.printStackTrace();
             } catch (ExecutionException e){
                 e.printStackTrace();
-            }*/ catch (Exception e){
+            } catch (Exception e){
                 e.printStackTrace();
             }
         } else{
@@ -494,7 +545,59 @@ public class NuevoRestauranteActivity extends AppCompatActivity {
         habilitarEdicion("actualizar");
     }
 
+    public void mostrarTimePicker(View view){
+        DialogFragment timePicker = new TimePickerFragment();
+        timePicker.show(getSupportFragmentManager(), "time picker");
+        editTextSeleccionado = (EditText) view;
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        String tiempo = String.format("%02d",hourOfDay) + ":" + String.format("%02d",minute);
+        editTextSeleccionado.setText(tiempo);
+    }
+
     private void poblarFormulario(){
 
     }
+
+    private Long getMinutesFromMidnight(String tiempo){
+        long minutosTotales = 0L;
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        String month = String.valueOf(calendar.get(Calendar.MONTH));
+        String day = String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
+
+        String baseDate = year + "-" + month + "-" + day + " ";
+
+
+        try{
+
+            String[] tiempoSeparado = tiempo.split(":");
+            /*minutosTotales += Integer.valueOf(tiempoSeparado[0]) * 60;
+            minutosTotales += Integer.valueOf(tiempoSeparado[1]);*/
+
+            baseDate += tiempoSeparado[0] + ":" + tiempoSeparado[1] + ":00";
+            Date date = format.parse(baseDate);
+            minutosTotales = date.getTime() - 21600000;
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Log.e("time", String.format("Minutos: %s", String.valueOf(minutosTotales)));
+        return minutosTotales;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }
