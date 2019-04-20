@@ -34,7 +34,8 @@ public class RestListTabFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         listView = (ListView) getView().findViewById(R.id.restaurantListView);
 
-        ArrayList<ModeloDatoRestaurante> elementos = new ArrayList<>();
+        ArrayList<ModeloDatoRestaurante> elementos = MainActivity.restaurantes;
+        /*ArrayList<ModeloDatoRestaurante> elementos = new ArrayList<>();
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Woods", "Cartago", 4, null));
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Subway", "Cartago", 5, null));
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Moe's", "Cartago", 5, null));
@@ -47,7 +48,7 @@ public class RestListTabFragment extends Fragment {
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Subway", "Cartago", 5, null));
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Moe's", "Cartago", 5, null));
         elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Treinta y tantos", "Turrialba", 2, null));
-
+        */
         CustomArrayAdapter adapter = new CustomArrayAdapter(getActivity().getApplicationContext(), elementos);
         listView.setAdapter(adapter);
 

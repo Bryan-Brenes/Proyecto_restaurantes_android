@@ -22,14 +22,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
     /*private String token;
     private String email;
     private String nombre;*/
+    public static ArrayList<ModeloDatoRestaurante> restaurantes;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        restaurantes = new ArrayList<>();
 
         /*token = getIntent().getStringExtra("token");
         nombre = getIntent().getStringExtra("name");
@@ -84,6 +93,127 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        obtenerRestaurantes();
+
+    }
+
+    private void obtenerRestaurantes(){
+
+        JSONObject obj = new JSONObject();
+        try{
+            obj.put("token", SessionManager.getToken());
+            obj.put("email", SessionManager.getEmail());
+            JSONObject filters = new JSONObject();
+            obj.put("filters", filters);
+
+            Post_json post = new Post_json();
+            DatosConsulta datos = new DatosConsulta(Post_json.OBTENER_RESTAURANTES, obj);
+            JSONObject res = post.execute(datos).get();
+
+            if (res != null){
+                Log.e("rest", res.toString());
+                // se verifica que no haya un error con la consulta -------------------------------------------------
+                String status = Post_json.verificarSiTieneStatus(res);
+                if (status.equals("Successfull")){
+
+                    // se actualiza el token de la sesion
+                    String tokenNuevo = res.getString("token");
+                    SessionManager.setToken(tokenNuevo);
+
+                    // se pobla es arrayList de restaurantes
+                    JSONArray restaurantesJsonArray = res.getJSONArray("restaurants");
+                    for (int i = 0; i < restaurantesJsonArray.length(); i++){
+
+                        JSONObject restActual = restaurantesJsonArray.getJSONObject(i);
+                        // obtener nombre
+                        String nombre = restActual.getString("name");
+
+                        // obtener direccion
+                        JSONObject address = restActual.getJSONObject("address");
+                        double latitud = address.getDouble("lat");
+                        double longitud = address.getDouble("long");
+                        String direccion = address.getString("direction");
+
+                        // obtener foods
+                        JSONArray foodsArray = restActual.getJSONArray("foods");
+                        ArrayList<String> foods = new ArrayList<>();
+                        for (int j = 0; j < foodsArray.length(); j++){
+                            foods.add(foodsArray.getString(j));
+                        }
+
+                        // obtener id
+                        String id = restActual.getString("_id");
+
+                        // obtener calificacion
+                        int calificacion = restActual.getInt("calification");
+
+                        // obtener precio
+                        int precio = restActual.getInt("price");
+
+                        // obtener numero
+                        int numero = 0;
+                        try {
+                            numero = restActual.getInt("number");
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+                        // obtener pagina web
+                        String paginaWeb = restActual.getString("webPage");
+                        if (paginaWeb.equals("null")){
+                            paginaWeb = null;
+                        }
+
+                        // obtener horarios
+                        JSONArray horariosArray = null;
+                        ArrayList<DiaHorario> horarios = new ArrayList<>();
+                        try {
+                            horariosArray = restActual.getJSONArray("schedules");
+                            for (int k = 0; k < horariosArray.length(); k++) {
+                                JSONObject horarioActual = horariosArray.getJSONObject(k);
+
+                                String diaHorario = horarioActual.getString("day");
+                                String aperturaHorario = horarioActual.getString("open");
+                                String cierreHorario = horarioActual.getString("close");
+
+                                DiaHorario dia = new DiaHorario(diaHorario, aperturaHorario, cierreHorario);
+                                horarios.add(dia);
+                            }
+                        } catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        ModeloDatoRestaurante rest = new ModeloDatoRestaurante(this, nombre, direccion, calificacion, null);
+                        rest.setLatitud(latitud);
+                        rest.setLongitud(longitud);
+                        rest.setFoods(foods);
+                        rest.setIdRestaurante(id);
+                        rest.setPrecio(precio);
+                        rest.setNumero(numero);
+                        rest.setPaginaWeb(paginaWeb);
+                        rest.setHorario(horarios);
+                        restaurantes.add(rest);
+                    }
+
+                } else {
+                    Toast.makeText(this, "No se pudo cargar restaurantes", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Log.e("url", "respuesta nula");
+            }
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
 
     }
 

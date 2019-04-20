@@ -497,6 +497,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                             Toast.makeText(this,"Restaurante agregado", Toast.LENGTH_SHORT).show();
                             SessionManager.setToken(res.getString("token"));
                             id = res.getString("id");
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
                         }
 
                     } else {
