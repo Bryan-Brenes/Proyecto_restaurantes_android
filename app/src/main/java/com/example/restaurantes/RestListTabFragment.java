@@ -38,17 +38,16 @@ public class RestListTabFragment extends Fragment {
         listView = (ListView) getView().findViewById(R.id.restaurantListView);
 
         ArrayList<ModeloDatoRestaurante> elementos = MainActivity.restaurantes;
-        
+
         CustomArrayAdapter adapter = new CustomArrayAdapter(getActivity().getApplicationContext(), elementos);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Position: " + String.valueOf(position));
-                Intent intent = new Intent(getActivity().getApplicationContext(), NuevoRestauranteActivity.class);
-                intent.putExtra("accion", "ver");
+                // mostrar detalles
                 restauranteSeleccionado = MainActivity.restaurantes.get(position);
+                Intent intent = new Intent(getActivity().getApplicationContext(), DetallesActivity.class);
                 startActivity(intent);
             }
         });
@@ -56,7 +55,11 @@ public class RestListTabFragment extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e("listview", "se presionó largo");
+                System.out.println("Position: " + String.valueOf(position));
+                Intent intent = new Intent(getActivity().getApplicationContext(), NuevoRestauranteActivity.class);
+                intent.putExtra("accion", "ver");
+                restauranteSeleccionado = MainActivity.restaurantes.get(position);
+                startActivity(intent);
                 return true; // true es para consumir el evento de click normal
             }
         });
