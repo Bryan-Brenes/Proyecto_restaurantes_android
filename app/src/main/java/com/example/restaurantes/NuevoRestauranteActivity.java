@@ -201,7 +201,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     private void habilitarEdicion(String action){
         // deshabilitar edicion
-        if (action.equals("nuevo") || action.equals("actualizar")){
+        if (action.equals("nuevo")){
             imagenRestauranteImageView.setEnabled(true);
             nombreEditText.setEnabled(true);
             direccionEditText.setEnabled(true);
@@ -224,7 +224,31 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             for(CheckBox checkBox: checkBoxesTiposComida){
                 checkBox.setEnabled(true);
             }
-        } else {
+        } else if(action.equals("actualizar")){
+            imagenRestauranteImageView.setEnabled(true);
+            nombreEditText.setEnabled(true);
+            direccionEditText.setEnabled(false);
+            telefonoEditText.setEnabled(true);
+            paginaWebEditText.setEnabled(true);
+            lunesAbreEditText.setEnabled(true);
+            lunesCierraEditText.setEnabled(true);
+            martesAbreEditText.setEnabled(true);
+            martesCierraEditText.setEnabled(true);
+            miercolesAbreEditText.setEnabled(true);
+            miercolesCierraEditText.setEnabled(true);
+            juevesAbreEditText.setEnabled(true);
+            juevesCierraEditText.setEnabled(true);
+            viernesAbreEditText.setEnabled(true);;
+            viernesCierraEditText.setEnabled(true);
+            sabadoAbreEditText.setEnabled(true);
+            sabadoCierraEditText.setEnabled(true);
+            domingoAbreEditText.setEnabled(true);
+            domingoCierraEditText.setEnabled(true);
+            for(CheckBox checkBox: checkBoxesTiposComida){
+                checkBox.setEnabled(true);
+            }
+
+        } else  {
             imagenRestauranteImageView.setEnabled(false);
             nombreEditText.setEnabled(false);
             direccionEditText.setEnabled(false);
@@ -329,18 +353,19 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     public void agregarRestaurante(View view){
 
-        Log.e("location", "presionó agregar");
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
-
-        if (currentLocation == null){
-            Toast.makeText(this, "No se pudo obtener su localización", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         if (accion.equals("nuevo")){
+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+
+            if (currentLocation == null){
+                Toast.makeText(this, "No se pudo obtener su localización", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // agregar el restaurante a la base de datos
 
             if (nombreEditText.getText().toString().equals("") || direccionEditText.getText().toString().equals("")){
@@ -525,6 +550,176 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             }
         } else{
             // modificar el restaurante
+            actualizarRestaurante();
+        }
+    }
+
+    private void actualizarRestaurante(){
+        JSONObject obj = new JSONObject();
+        try{
+
+            // armando el json de consulta
+            obj.put("token", SessionManager.getToken());
+            obj.put("email", SessionManager.getEmail());
+            obj.put("id", RestListTabFragment.restauranteSeleccionado.getIdRestaurante());
+            obj.put("name", nombreEditText.getText().toString());
+
+            // se agrega telefono al json solo si el usuario ingresó un telefono
+            if (!telefonoEditText.getText().toString().equals("")){
+                obj.put("number", Integer.valueOf(telefonoEditText.getText().toString()));
+            }
+
+            // se agrega página web solo si el usuario lo indicó
+            if (!paginaWebEditText.getText().toString().equals("")){
+                obj.put("webPage", paginaWebEditText.getText().toString());
+            }
+
+            // Array de comidas
+            JSONArray tipoComidasSeleccionadas = new JSONArray();
+            for (CheckBox checkBox: checkBoxesTiposComida){
+                if (checkBox.isChecked()){
+                    tipoComidasSeleccionadas.put(checkBox.getText().toString());
+                }
+            }
+            if (tipoComidasSeleccionadas.length() != 0){
+                obj.put("foods", tipoComidasSeleccionadas);
+            }
+
+            // Array de horarios
+            JSONArray horarioArray = new JSONArray();
+
+            // boolean para solo agregar horarios si todos los campos estan llenos
+            boolean algunCampoHorarioVacio = false;
+            Long horaApertura = 0L;
+            Long horaCierre = 0L;
+
+            // json para lunes
+            JSONObject lunesHorario = new JSONObject();
+            if (lunesAbreEditText.getText().toString().equals("") || lunesCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(lunesAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(lunesCierraEditText.getText().toString());
+            lunesHorario.put("day", "Lunes");
+            lunesHorario.put("open", horaApertura);
+            lunesHorario.put("close", horaCierre);
+            horarioArray.put(lunesHorario);
+
+            // json para martes
+            JSONObject martesHorario = new JSONObject();
+            if (martesAbreEditText.getText().toString().equals("") || martesCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(martesAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(martesCierraEditText.getText().toString());
+            martesHorario.put("day", "Martes");
+            martesHorario.put("open", horaApertura);
+            martesHorario.put("close", horaCierre);
+            horarioArray.put(martesHorario);
+
+            // json para miercoles
+            JSONObject miercolesHorario = new JSONObject();
+            if (miercolesAbreEditText.getText().toString().equals("") || miercolesCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(miercolesAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(miercolesCierraEditText.getText().toString());
+            miercolesHorario.put("day", "Miercoles");
+            miercolesHorario.put("open", horaApertura);
+            miercolesHorario.put("close", horaCierre);
+            horarioArray.put(miercolesHorario);
+
+            // json para jueves
+            JSONObject juevesHorario = new JSONObject();
+            if (juevesAbreEditText.getText().toString().equals("") || juevesCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(juevesAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(juevesCierraEditText.getText().toString());
+            juevesHorario.put("day", "Jueves");
+            juevesHorario.put("open", horaApertura);
+            juevesHorario.put("close", horaCierre);
+            horarioArray.put(juevesHorario);
+
+            // json para viernes
+            JSONObject viernesHorario = new JSONObject();
+            if (viernesAbreEditText.getText().toString().equals("") || viernesCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(viernesAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(viernesCierraEditText.getText().toString());
+            viernesHorario.put("day", "Viernes");
+            viernesHorario.put("open", horaApertura);
+            viernesHorario.put("close", horaCierre);
+            horarioArray.put(viernesHorario);
+
+            // json para sabado
+            JSONObject sabadoHorario = new JSONObject();
+            if (sabadoAbreEditText.getText().toString().equals("") || sabadoCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(sabadoAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(sabadoCierraEditText.getText().toString());
+            sabadoHorario.put("day", "Sabado");
+            sabadoHorario.put("open", horaApertura);
+            sabadoHorario.put("close", horaCierre);
+            horarioArray.put(sabadoHorario);
+
+            // json para domingo
+            JSONObject domingoHorario = new JSONObject();
+            if (domingoAbreEditText.getText().toString().equals("") || domingoCierraEditText.getText().toString().equals("")){
+                algunCampoHorarioVacio = true;
+            }
+            horaApertura = getMinutesFromMidnight(domingoAbreEditText.getText().toString());
+            horaCierre = getMinutesFromMidnight(domingoCierraEditText.getText().toString());
+            domingoHorario.put("day", "Domingo");
+            domingoHorario.put("open", horaApertura);
+            domingoHorario.put("close", horaCierre);
+            horarioArray.put(domingoHorario);
+
+            if (!algunCampoHorarioVacio){
+                obj.put("schedules", horarioArray);
+            }
+
+
+            Log.e("rest", obj.toString());
+
+            // falta hacer el request pero hay que ver el tipo de dato date si es necesario
+            // ver si cuando se agrega un restaurante puede devolver el id para agregar imagenes
+
+            Post_json post = new Post_json();
+            DatosConsulta datos = new DatosConsulta(Post_json.ACTUALIZAR_RESTAURANTES, obj);
+            JSONObject res = post.execute(datos).get();
+
+            if (res != null){
+                Log.e("rest", res.toString());
+                // se verifica que no haya un error con la consulta -------------------------------------------------
+                String status = Post_json.verificarSiTieneStatus(res);
+                if (status != null){
+
+                    if(!status.equals("Restaurant's updated")){
+                        Toast.makeText(this,"No se pudo actualizar el restaurante", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this,"Restaurante actualizado", Toast.LENGTH_SHORT).show();
+                        SessionManager.setToken(res.getString("token"));
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
+
+                }
+            } else {
+                Log.e("url", "respuesta nula");
+            }
+
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 

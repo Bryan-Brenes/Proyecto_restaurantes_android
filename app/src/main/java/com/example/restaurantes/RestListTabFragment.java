@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,20 +38,7 @@ public class RestListTabFragment extends Fragment {
         listView = (ListView) getView().findViewById(R.id.restaurantListView);
 
         ArrayList<ModeloDatoRestaurante> elementos = MainActivity.restaurantes;
-        /*ArrayList<ModeloDatoRestaurante> elementos = new ArrayList<>();
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Woods", "Cartago", 4, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Subway", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Moe's", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Treinta y tantos", "Turrialba", 2, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Woods", "Cartago", 4, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Subway", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Moe's", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Treinta y tantos", "Turrialba", 2, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Woods", "Cartago", 4, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Subway", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Moe's", "Cartago", 5, null));
-        elementos.add(new ModeloDatoRestaurante(getActivity().getApplicationContext(), "Treinta y tantos", "Turrialba", 2, null));
-        */
+        
         CustomArrayAdapter adapter = new CustomArrayAdapter(getActivity().getApplicationContext(), elementos);
         listView.setAdapter(adapter);
 
@@ -62,6 +50,14 @@ public class RestListTabFragment extends Fragment {
                 intent.putExtra("accion", "ver");
                 restauranteSeleccionado = MainActivity.restaurantes.get(position);
                 startActivity(intent);
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("listview", "se presionó largo");
+                return true; // true es para consumir el evento de click normal
             }
         });
     }
