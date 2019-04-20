@@ -179,7 +179,8 @@
                     android:onClick="mostrarTimePicker"
                     android:enabled="false"
                     android:inputType="none"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:tag="LunesApertura"/>
 
                 <TextView
                     android:id="@+id/textView13"
@@ -510,7 +511,8 @@
                     android:onClick="mostrarTimePicker"
                     android:enabled="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:focusable="false"
+                    android:tag="DomingoCierre"/>
 
             </LinearLayout>
 

@@ -34,6 +34,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URI;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -177,6 +178,10 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         obtenerTiposComida();
         agregarLosTiposAInterfaz();
         habilitarEdicion(accion);
+
+        if (accion.equals("ver") || accion.equals("actualizar")){
+            poblarFormulario();
+        }
     }
 
     @Override
@@ -561,6 +566,81 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     private void poblarFormulario(){
 
+        //imagenRestauranteImageView.setEnabled(true);
+        nombreEditText.setText(RestListTabFragment.restauranteSeleccionado.getNombre());
+        direccionEditText.setText(RestListTabFragment.restauranteSeleccionado.getUbicacion());
+        int numero = RestListTabFragment.restauranteSeleccionado.getNumero();
+        if (numero == 0){
+            telefonoEditText.setHint("No registrado");
+        } else {
+            telefonoEditText.setText(String.valueOf(numero));
+        }
+        String pagina = RestListTabFragment.restauranteSeleccionado.getPaginaWeb();
+        if (pagina != null){
+            paginaWebEditText.setText(pagina);
+        } else {
+            paginaWebEditText.setHint("No registrada");
+        }
+
+        ArrayList<DiaHorario> horario = RestListTabFragment.restauranteSeleccionado.getHorario();
+        if(horario.size() != 0){
+            /*String fechaApertura = dia.getHoraApertura();
+              String horaApertura = fechaApertura.substring(11,16);*/
+
+            // lunes
+            lunesAbreEditText.setText(horario.get(0).getHoraApertura().substring(11,16));
+            lunesCierraEditText.setText(horario.get(0).getHoraCierre().substring(11,16));
+
+            // martes
+            martesAbreEditText.setText(horario.get(1).getHoraApertura().substring(11,16));
+            martesCierraEditText.setText(horario.get(1).getHoraCierre().substring(11,16));
+
+            // miercoles
+            miercolesAbreEditText.setText(horario.get(2).getHoraApertura().substring(11,16));
+            miercolesCierraEditText.setText(horario.get(2).getHoraCierre().substring(11,16));
+
+            // jueves
+            juevesAbreEditText.setText(horario.get(3).getHoraApertura().substring(11,16));
+            juevesCierraEditText.setText(horario.get(3).getHoraCierre().substring(11,16));
+
+            // viernes
+            viernesAbreEditText.setText(horario.get(4).getHoraApertura().substring(11,16));
+            viernesCierraEditText.setText(horario.get(4).getHoraCierre().substring(11,16));
+
+            // sabado
+            sabadoAbreEditText.setText(horario.get(5).getHoraApertura().substring(11,16));
+            sabadoCierraEditText.setText(horario.get(5).getHoraCierre().substring(11,16));
+
+            // domingo
+            domingoAbreEditText.setText(horario.get(6).getHoraApertura().substring(11,16));
+            domingoCierraEditText.setText(horario.get(6).getHoraCierre().substring(11,16));
+        }
+
+        /*lunesAbreEditText.setEnabled(true);
+        lunesCierraEditText.setEnabled(true);
+        martesAbreEditText.setEnabled(true);
+        martesCierraEditText.setEnabled(true);
+        miercolesAbreEditText.setEnabled(true);
+        miercolesCierraEditText.setEnabled(true);
+        juevesAbreEditText.setEnabled(true);
+        juevesCierraEditText.setEnabled(true);
+        viernesAbreEditText.setEnabled(true);;
+        viernesCierraEditText.setEnabled(true);
+        sabadoAbreEditText.setEnabled(true);
+        sabadoCierraEditText.setEnabled(true);
+        domingoAbreEditText.setEnabled(true);
+        domingoCierraEditText.setEnabled(true);*/
+
+        ArrayList<String> foods = RestListTabFragment.restauranteSeleccionado.getFoods();
+        if(foods.size() != 0){
+            for(String food : foods){
+                for(CheckBox checkBox : checkBoxesTiposComida){
+                    if (checkBox.getText().toString().equals(food)){
+                        checkBox.setChecked(true);
+                    }
+                }
+            }
+        }
     }
 
     private Long getMinutesFromMidnight(String tiempo){

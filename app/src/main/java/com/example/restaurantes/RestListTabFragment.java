@@ -1,5 +1,6 @@
 package com.example.restaurantes;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ public class RestListTabFragment extends Fragment {
     private static final String TAG = "RestListFragment";
 
     private ListView listView;
+    public static ModeloDatoRestaurante restauranteSeleccionado;
 
     @Nullable
     @Override
@@ -56,6 +58,10 @@ public class RestListTabFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println("Position: " + String.valueOf(position));
+                Intent intent = new Intent(getActivity().getApplicationContext(), NuevoRestauranteActivity.class);
+                intent.putExtra("accion", "ver");
+                restauranteSeleccionado = MainActivity.restaurantes.get(position);
+                startActivity(intent);
             }
         });
     }
