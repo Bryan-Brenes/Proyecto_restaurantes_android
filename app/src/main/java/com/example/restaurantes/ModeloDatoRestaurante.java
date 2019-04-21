@@ -16,6 +16,7 @@ public class ModeloDatoRestaurante {
     private Bitmap calificacion;
     private Bitmap imagen;
     private Context context;
+    private int calificacionNumerica;
 
     private double latitud;
     private double longitud;
@@ -31,6 +32,7 @@ public class ModeloDatoRestaurante {
         this.ubicacion = ubicacion;
         this.imagen = imagen;
         this.context = context;
+        this.calificacionNumerica = calificacion;
 
         if (imagen == null){
             this.imagen = BitmapFactory.decodeResource(context.getResources(), R.drawable.rest_image_default);
@@ -70,6 +72,10 @@ public class ModeloDatoRestaurante {
 
     public Bitmap getCalificacion() {
         return calificacion;
+    }
+
+    public int getCalificacionNumerica(){
+        return this.calificacionNumerica;
     }
 
     public Bitmap getImagen() {

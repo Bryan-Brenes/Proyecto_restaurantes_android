@@ -75,6 +75,7 @@ public class user_login extends AppCompatActivity {
                     }
                 } else {
                     Log.e("url", "respuesta nula");
+                    Toast.makeText(this, "No se puede ingresar en este momento", Toast.LENGTH_SHORT).show();
                 }
 
 

@@ -32,6 +32,8 @@ public class Post_json extends AsyncTask<DatosConsulta, Void, JSONObject> {
     public static String RESET_PASSWORD = "https://foodcourtec.herokuapp.com/resetPassword";
     public static String OBTENER_RESTAURANTES = "https://foodcourtec.herokuapp.com/getRestaurants";
     public static String ACTUALIZAR_RESTAURANTES = "https://foodcourtec.herokuapp.com/updateRestaurant";
+    public static String OBTENER_OPINIONES = "https://foodcourtec.herokuapp.com/getOpinions";
+    public static String CREAR_OPINION = "https://foodcourtec.herokuapp.com/createOpinion";
     public static String TEST_URL = "https://data.fixer.io/api/latest";
 
     private JSONObject post(String URL_STRING, JSONObject jsonRequest){

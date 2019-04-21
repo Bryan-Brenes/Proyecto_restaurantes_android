@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/nombreRestauranteEditText"
+            android:id="@+id/nombreRestauranteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -123,7 +123,265 @@
                             app:srcCompat="@drawable/change" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView25"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Teléfono:"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/telefonoRestTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="3"
+                        android:text="12345678"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
+                        android:text="Tipos de comida:"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/tiposComidaVerticalLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_weight="61"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_weight="0.1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView31"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="0dp"
+                        android:layout_weight="0.1"
+                        android:text="Horarios:"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:id="@+id/horariosVerticalLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_weight="61"
+                        android:orientation="vertical" />
+                </LinearLayout>
+
+                <fragment
+                    android:id="@+id/fragment"
+                    android:name="com.example.restaurantes.mapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
+                    android:layout_margin="10dp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imagenUsuarioComentario"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/user" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/nombreUsuarioComentario"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textStyle="bold"
+                            android:text="Nombre usuario" />
+
+                        <TextView
+                            android:id="@+id/mensajeOpninion"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="#cccccc"
+                            android:text="Danos tu opinión." />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/estrellaUnoComentarioImageView"
+                        android:tag="estrellaUnoComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="actualizarEstrellasCalificacionUsuario"
+                        android:layout_marginRight="5dp"
+                        app:srcCompat="@drawable/star_hollow" />
+
+                    <ImageView
+                        android:id="@+id/estrellaDosComentarioImageView"
+                        android:tag="estrellaDosComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarEstrellasCalificacionUsuario"
+                        app:srcCompat="@drawable/star_hollow" />
+
+                    <ImageView
+                        android:id="@+id/estrellaTresComentarioImageView"
+                        android:tag="estrellaTresComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarEstrellasCalificacionUsuario"
+                        app:srcCompat="@drawable/star_hollow" />
+
+                    <ImageView
+                        android:id="@+id/estrellaCuatroComentarioImageView"
+                        android:tag="estrellaCuatroComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarEstrellasCalificacionUsuario"
+                        app:srcCompat="@drawable/star_hollow" />
+
+                    <ImageView
+                        android:id="@+id/estrellaCincoComentarioImageView"
+                        android:tag="estrellaCincoComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarEstrellasCalificacionUsuario"
+                        app:srcCompat="@drawable/star_hollow" />
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/billeteUnoComentarioImageView"
+                        android:tag="billeteUnoComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="actualizarDineroCalificacionUsuario"
+                        android:layout_marginRight="5dp"
+                        app:srcCompat="@drawable/change_hollow" />
+
+                    <ImageView
+                        android:id="@+id/billeteDosComentarioImageView"
+                        android:tag="billeteDosComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarDineroCalificacionUsuario"
+                        app:srcCompat="@drawable/change_hollow" />
+
+                    <ImageView
+                        android:id="@+id/billeteTresComentarioImageView"
+                        android:tag="billeteTresComentario"
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:onClick="actualizarDineroCalificacionUsuario"
+                        app:srcCompat="@drawable/change_hollow" />
+
+
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="6"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp">
+
+                    <EditText
+                        android:id="@+id/comentarioUsuarioEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:singleLine="false"
+                        android:hint="Comentar..."
+                        android:layout_weight="6"/>
+
+                    <ImageView
+                        android:id="@+id/sendImageView"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:onClick="enviarComentario"
+                        android:src="@drawable/right_arrow"/>
+
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/comentariosListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
             </LinearLayout>
+
         </ScrollView>
 
     </LinearLayout>
