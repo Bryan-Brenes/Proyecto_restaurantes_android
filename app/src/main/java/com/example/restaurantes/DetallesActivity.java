@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,6 +56,7 @@ public class DetallesActivity extends AppCompatActivity {
 
     ModeloDatoRestaurante restauranteSeleccionado;
     ArrayList<ModeloDatoComentario> comentarios;
+    CustomArrayAdapterComentarios adapter;
 
 
     @Override
@@ -139,8 +141,15 @@ public class DetallesActivity extends AppCompatActivity {
         dineroTresComentarioImageView = findViewById(R.id.billeteTresComentarioImageView);
 
         comentarios = obtenerComentarios();
-        CustomArrayAdapterComentarios adapter = new CustomArrayAdapterComentarios(getApplicationContext(), comentarios);
+        adapter = new CustomArrayAdapterComentarios(getApplicationContext(), comentarios);
         comentariosListView.setAdapter(adapter);
+        comentariosListView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
     }
 
@@ -268,6 +277,8 @@ public class DetallesActivity extends AppCompatActivity {
                         Toast.makeText(this, "No se pudo agregar la opinion", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "Opinión agregada", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+
                     }
                 } else {
                     Log.e("url", "respuesta nula");
@@ -393,11 +404,11 @@ public class DetallesActivity extends AppCompatActivity {
                             int price = opinion.getInt("price");
                             String date = opinion.getString("date");
                             String comment = opinion.getString("comment");
+                            String user = opinion.getString("user");
+                            String[] userData = user.split("@");
 
-                            ModeloDatoComentario com = new ModeloDatoComentario();
-                            com.setCalificacionNumerica(calification);
-                            com.setPrecio(price);
-                            com.setFecha(date);
+                            ModeloDatoComentario com = new ModeloDatoComentario(this, null, userData[0], null, calification, price,date);
+
                             if(comment.equals("null")){
                                 com.setComentario(null);
                             } else {
@@ -427,4 +438,5 @@ public class DetallesActivity extends AppCompatActivity {
 
         return comentariosArrayList;
     }
+
 }
