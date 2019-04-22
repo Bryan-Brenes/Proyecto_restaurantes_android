@@ -79,23 +79,13 @@
                 android:text="- ó -"
                 android:textSize="14sp" />
 
-            <Button
-                android:id="@+id/ingresarFacebookBtn"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="20dp"
-                android:onClick="ingresarConFacebook"
-
-                android:background="@drawable/facebook_button_style"
-                android:drawableLeft="@drawable/facebook_logo_25"
-                android:paddingLeft="20dp"
-                android:shadowColor="#A8A8A8"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="0"
-                android:text="@string/ingresarConFacebookText"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="30dp" />
 
 
         </LinearLayout>

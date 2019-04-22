@@ -8,6 +8,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,6 +27,9 @@ public class user_login extends AppCompatActivity {
     EditText emailEdittext;
     EditText passwordEditText;
 
+    CallbackManager callbackManager;
+    LoginButton loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,12 +37,40 @@ public class user_login extends AppCompatActivity {
 
         emailEdittext = findViewById(R.id.userNameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+
+        callbackManager = CallbackManager.Factory.create();
+        loginButton = findViewById(R.id.login_button);
+        loginButton.setReadPermissions("email");
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                getInfo(accessToken);
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplicationContext(), "Inicio de Sesion Cancelado", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(getApplicationContext(), "Error al conectar con facebook", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if(isLoggedIn()) {
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            getInfo(accessToken);
+        }
+
     }
 
-    public void ingresarConFacebook(View view){
-        System.out.println("ingresar con facebook");
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void validarCredenciales(View view){
@@ -68,7 +108,6 @@ public class user_login extends AppCompatActivity {
                         SessionManager.setToken(res.getString("token"));
                         SessionManager.setNombre(res.getString("name"));
                         SessionManager.setEmail(email);
-
                         Log.e("login",String.format("token: %s\nname: %s", res.getString("token"), res.getString("name")));
                         startActivity(intent);
 
@@ -102,5 +141,58 @@ public class user_login extends AppCompatActivity {
     public void olvidoContrasenia(View view){
         Intent intent = new Intent(getApplicationContext(), Recuperacion_password.class);
         startActivity(intent);
+    }
+
+    private void getInfo(AccessToken accessToken){
+        GraphRequest request = GraphRequest.newMeRequest(
+                accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        try {
+                            String name = object.getString("name");
+                            String email = object.getString("email");
+                            JSONObject json = new JSONObject();
+                            json.put("email", email);
+                            json.put("socialLogin", true);
+                            Post_json post = new Post_json();
+                            DatosConsulta datos = new DatosConsulta(Post_json.LOGIN_USUARIO, json);
+                            JSONObject res = post.execute(datos).get();
+                            if(res != null) {
+                                String status = Post_json.verificarSiTieneStatus(res);
+                                if(status != null) {
+                                    Toast.makeText(getApplicationContext(), "Datos de usuario incorrectos", Toast.LENGTH_SHORT).show();
+                                }
+                                else {
+                                    SessionManager.setToken(res.getString("token"));
+                                    SessionManager.setNombre(name);
+                                    SessionManager.setEmail(email);
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+                        catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(), "Error en la respuesta de Facebook", Toast.LENGTH_SHORT).show();
+                        }
+                        catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        catch (ExecutionException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "email,name");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+        return isLoggedIn;
     }
 }
