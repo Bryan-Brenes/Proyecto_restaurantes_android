@@ -18,7 +18,7 @@
 
             <ImageButton
                 android:id="@+id/editImageButton"
-                android:onClick="accionEditImageButton"
+                android:onClick="sendImages"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -38,13 +38,11 @@
                     android:visibility="invisible"
                     app:srcCompat="@android:drawable/ic_menu_more" />
 
-                <ImageView
-                    android:id="@+id/imagenRestauranteImageView"
+                <ImageSwitcher
+                    android:id="@+id/switcher"
                     android:layout_width="wrap_content"
-                    android:layout_height="180dp"
-                    android:layout_weight="10"
-                    android:onClick="abrirGaleria"
-                    app:srcCompat="@drawable/default_rest" />
+                    android:layout_height="167dp"
+                    android:layout_weight="10" />
 
                 <ImageView
                     android:id="@+id/nextImageImageView"
@@ -521,7 +519,6 @@
                 android:id="@+id/agregarBtn"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
-
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/loginbuttonstylesecundary"

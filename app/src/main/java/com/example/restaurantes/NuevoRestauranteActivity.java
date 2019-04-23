@@ -1,8 +1,10 @@
 package com.example.restaurantes;
 
+import org.apache.commons.io.IOUtils;
+
 import android.Manifest;
 import android.app.TimePickerDialog;
-import android.content.Context;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,40 +12,56 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
+
+import com.google.gson.JsonElement;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.builder.Builders;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.text.ParseException;
+import com.google.gson.JsonObject;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class NuevoRestauranteActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
 
     private static final int PICK_IMAGE = 100;
+    private static final int GET_IMAGES = 3500;
     /*private String token;
     private String email;
     private String nombre;*/
@@ -60,7 +78,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
     LocationManager locationManager;
     LocationListener locationListener;
 
-    ImageView imagenRestauranteImageView;
+    ImageSwitcher switcher;
     ImageButton editImageButton;
     EditText nombreEditText;
     EditText direccionEditText;
@@ -84,8 +102,17 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     Button agregarRestauranteBtn;
 
+
     ArrayList<String> tiposComida;
     ArrayList<CheckBox> checkBoxesTiposComida;
+
+    String fieldName = "photos";
+    String nameFile = "upload";
+    int maxFiles = 5;
+    ArrayList<File> files = new ArrayList<>();
+    ArrayList<Uri> images = new ArrayList<>();
+    int currentIndex = 0;
+    Handler handler;
 
     ArrayList<Uri> imagenesURIArrayList;
     Uri imageURI;
@@ -140,9 +167,37 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                     LOCATION_REFRESH_DISTANCE, locationListener);
         }
 
+        switcher = findViewById(R.id.switcher);
+        switcher.setFactory(new ViewSwitcher.ViewFactory() {
+            public View makeView() {
+                ImageView imageView = new ImageView(getApplicationContext());
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setLayoutParams(new ImageSwitcher.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+                return imageView;
+            }
+        });
+        Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+        switcher.setInAnimation(in);
+        switcher.setOutAnimation(out);
 
-
-
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(images.size() == 0) {
+                    switcher.setImageResource(R.drawable.store);
+                }
+                else {
+                    currentIndex++;
+                    if (currentIndex == images.size()) {
+                        currentIndex = 0;
+                    }
+                    switcher.setImageURI(images.get(currentIndex));
+                }
+                handler.postDelayed(this, 3000);
+            }
+        }, 3000);
 
         id = null;
         if (accion.equals("actualizar")){
@@ -151,7 +206,6 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
         agregarRestauranteBtn = findViewById(R.id.agregarBtn);
         editImageButton = findViewById(R.id.editImageButton);
-        imagenRestauranteImageView = findViewById(R.id.imagenRestauranteImageView);
         nombreEditText = findViewById(R.id.nombreRestauranteEditText);
         direccionEditText = findViewById(R.id.direccionRestauranteEditText);
         telefonoEditText = findViewById(R.id.telefonoRestauranteEditText);
@@ -184,6 +238,120 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         }
     }
 
+    public void sendImages(View view){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        try {
+            startActivityForResult(intent, GET_IMAGES);
+        }
+        catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            switch(requestCode) {
+                case PICK_IMAGE:
+                    imageURI = data.getData();
+                    imagenesURIArrayList.add(imageURI);
+                    break;
+                case GET_IMAGES:
+                    files.clear();
+                    images.clear();
+                    obtainImages(data);
+                    break;
+            }
+        }
+    }
+
+    private void obtainImages(Intent data) {
+        if(data.getClipData() != null) {
+            int count = data.getClipData().getItemCount();
+            for(int i = 0; i < count; i++) {
+                selectImage(data.getClipData().getItemAt(i).getUri(), i);
+            }
+        }
+        else if(data.getData() != null) {
+            selectImage(data.getData(), 0);
+        }
+    }
+
+    private void selectImage(Uri uri, int number) {
+        OutputStream outputStream = null;
+        try {
+            if(files.size() < maxFiles) {
+                InputStream is = getContentResolver().openInputStream(uri);
+                File f = new File(getExternalFilesDir(null), nameFile + number + ".jpg");
+                outputStream = new FileOutputStream(f);
+                IOUtils.copy(is, outputStream);
+                files.add(f);
+                images.add(uri);
+            }
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(outputStream != null) {
+                try {
+                    outputStream.close();
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void upload() {
+      if(files.size() > 0) {
+        Builders.Any.B builder = Ion.with(NuevoRestauranteActivity.this).load("POST", Post_json.ANADIR_FOTOS);
+        for (int i = 0; i < files.size(); i++) {
+          builder.setMultipartFile(fieldName, files.get(i));
+        }
+        builder.setMultipartParameter("id", id);
+        builder.setMultipartParameter("token", SessionManager.getToken());
+        builder.setMultipartParameter("email", SessionManager.getEmail());
+        Future uploading = builder
+            .asJsonObject()
+            .setCallback(new FutureCallback<JsonObject>() {
+              @Override
+              public void onCompleted(Exception e, JsonObject result) {
+                if(result != null) {
+                  JsonElement element = result.get("status");
+                  String status = element.getAsString();
+                  if(status.equals("Photos added")) {
+                    JsonElement otherElement = result.get("token");
+                    String token = otherElement.getAsString();
+                    SessionManager.setToken(token);
+                    Toast.makeText(getApplicationContext(), "Fotos añadidas", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                  }
+                  else {
+                    Toast.makeText(getApplicationContext(), "Fallo al subir las fotografias", Toast.LENGTH_SHORT).show();
+                  }
+                }
+                else {
+                  Toast.makeText(getApplicationContext(), "Fallo al conectar con el servidor", Toast.LENGTH_SHORT).show();
+                }
+              }
+            });
+      }
+      else {
+          Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+          startActivity(intent);
+      }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
@@ -202,7 +370,6 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
     private void habilitarEdicion(String action){
         // deshabilitar edicion
         if (action.equals("nuevo")){
-            imagenRestauranteImageView.setEnabled(true);
             nombreEditText.setEnabled(true);
             direccionEditText.setEnabled(true);
             telefonoEditText.setEnabled(true);
@@ -225,7 +392,6 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                 checkBox.setEnabled(true);
             }
         } else if(action.equals("actualizar")){
-            imagenRestauranteImageView.setEnabled(true);
             nombreEditText.setEnabled(true);
             direccionEditText.setEnabled(false);
             telefonoEditText.setEnabled(true);
@@ -249,7 +415,6 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             }
 
         } else  {
-            imagenRestauranteImageView.setEnabled(false);
             nombreEditText.setEnabled(false);
             direccionEditText.setEnabled(false);
             telefonoEditText.setEnabled(false);
@@ -276,7 +441,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         if(action.equals("nuevo")){
             agregarRestauranteBtn.setText("agregar Restaurante");
             agregarRestauranteBtn.setVisibility(View.VISIBLE);
-            editImageButton.setVisibility(View.INVISIBLE);
+            editImageButton.setVisibility(View.VISIBLE);
         } else if(action.equals("actualizar")){
             agregarRestauranteBtn.setText("Actualizar");
             agregarRestauranteBtn.setVisibility(View.VISIBLE);
@@ -527,8 +692,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                             Toast.makeText(this,"Restaurante agregado", Toast.LENGTH_SHORT).show();
                             SessionManager.setToken(res.getString("token"));
                             id = res.getString("id");
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
+                            upload();
                         }
 
                     } else {
@@ -728,23 +892,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         startActivityForResult(intent, PICK_IMAGE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,  Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            imageURI = data.getData();
-            imagenesURIArrayList.add(imageURI);
-            imagenRestauranteImageView.setImageURI(imageURI);
-        }
-    }
-
     public void agregarFotos(){
 
-    }
-
-    public void accionEditImageButton(View view){
-        habilitarEdicion("actualizar");
     }
 
     public void mostrarTimePicker(View view){

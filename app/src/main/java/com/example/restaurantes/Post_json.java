@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Post_json extends AsyncTask<DatosConsulta, Void, JSONObject> {
 
+    public static String ANADIR_FOTOS = "https://foodcourtec.herokuapp.com/addPhoto";
     public static String REGISTRAR_USUARIO = "https://foodcourtec.herokuapp.com/createUser/";
     public static String LOGIN_USUARIO = "https://foodcourtec.herokuapp.com/loginUser/";
     public static String OBTENER_COMIDAS = "https://foodcourtec.herokuapp.com/getFoods";
