@@ -85,6 +85,15 @@ public class DetallesActivity extends AppCompatActivity {
         comentarios = new ArrayList<>();
 
         restauranteSeleccionado = RestListTabFragment.restauranteSeleccionado;
+        try{
+            String action = getIntent().getStringExtra("action");
+            if (action.equals("verMarcador")) {
+                restauranteSeleccionado = mapFragment.restauranteSeleccionado;
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         comentarioUsuario = new ModeloDatoComentario();
         comentarioUsuario.setCalificacionNumerica(0);  // buscar si ya a calificado el restaurante
         comentarioUsuario.setPrecio(0); // Buscar si ya se ha dado un precio para el restaurante
