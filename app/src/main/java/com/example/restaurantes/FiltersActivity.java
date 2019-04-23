@@ -1,5 +1,6 @@
 package com.example.restaurantes;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -162,6 +163,39 @@ public class FiltersActivity extends AppCompatActivity {
       }
     });
 
+    getFilters(0, 0, this);
+
+  }
+
+  public static JSONObject getFilters(int lat, int log, Context context) {
+    SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+    JSONObject filters = new JSONObject();
+    try {
+      if(settings.contains("price")) {
+        JSONObject price = new JSONObject(settings.getString("price", ""));
+        filters.put("price", price);
+      }
+      if(settings.contains("calification")) {
+        JSONObject calification = new JSONObject(settings.getString("calification", ""));
+        filters.put("calification", calification);
+      }
+      if(settings.contains("foods")) {
+        JSONArray array = new JSONArray(settings.getString("foods", ""));
+        filters.put("foods", array);
+      }
+      if(settings.contains("distance")) {
+        int distance = settings.getInt("distance", 100);
+        JSONObject ubication = new JSONObject();
+        ubication.put("lat", lat);
+        ubication.put("long", log);
+        ubication.put("distance", distance);
+        filters.put("ubication", ubication);
+      }
+    }
+    catch(JSONException e) {
+      e.printStackTrace();
+    }
+    return filters;
   }
 
   private void getFoods() {
@@ -217,10 +251,6 @@ public class FiltersActivity extends AppCompatActivity {
     }
   }
 
-  public static JSONObject getFilters(int lat, int log) {
-    return null;
-  }
-
   public void saveFilters(View view) {
     try {
       JSONArray array = new JSONArray();
@@ -261,13 +291,6 @@ public class FiltersActivity extends AppCompatActivity {
     catch (JSONException e) {
       Toast.makeText(getApplicationContext(), "Fallo al guardar los filtros", Toast.LENGTH_SHORT).show();
     }
-  }
-
-  private boolean verificateDates(int minPrice, int maxPrice, int minCaf, int maxCaf) {
-    if(minCaf > maxCaf || minPrice > maxPrice) {
-      return false;
-    }
-    return true;
   }
 
 }
