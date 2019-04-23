@@ -1,19 +1,32 @@
 package com.example.restaurantes;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,8 +35,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class DetallesActivity extends AppCompatActivity {
+
+    ImageSwitcher switcher;
+    Handler handler;
+    ArrayList<Bitmap> images = new ArrayList<>();
+    int currentIndex = 0;
 
     TextView nombreRestaurante;
     ImageView estrellaUno;
@@ -83,6 +102,37 @@ public class DetallesActivity extends AppCompatActivity {
         tipoComidaVerticalLayout = findViewById(R.id.tiposComidaVerticalLayout);
         horariosVerticalLayout = findViewById(R.id.horariosVerticalLayout);
         comentariosListView = findViewById(R.id.comentariosListView);
+
+        switcher = findViewById(R.id.switcher);
+        switcher.setFactory(new ViewSwitcher.ViewFactory() {
+            public View makeView() {
+                ImageView imageView = new ImageView(getApplicationContext());
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setLayoutParams(new ImageSwitcher.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+                return imageView;
+            }
+        });
+        Animation in = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right);
+        switcher.setInAnimation(in);
+        switcher.setOutAnimation(out);
+
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(images.size() > 0) {
+                    currentIndex++;
+                    if (currentIndex == images.size()) {
+                        currentIndex = 0;
+                    }
+                    switcher.setImageDrawable(new BitmapDrawable(images.get(currentIndex)));
+                }
+                handler.postDelayed(this, 3000);
+            }
+        }, 3000);
+
+        switcher.setImageResource(R.drawable.store);
 
         // llenado los elementos gráficos con la informacion del restaurante
         nombreRestaurante.setText(restauranteSeleccionado.getNombre());
@@ -151,6 +201,49 @@ public class DetallesActivity extends AppCompatActivity {
             }
         });
 
+        obtainPhotos();
+
+    }
+
+    private void obtainPhotos() {
+        images.clear();
+        JsonObject json = new JsonObject();
+        json.addProperty("email", SessionManager.getEmail());
+        json.addProperty("id", restauranteSeleccionado.getIdRestaurante());
+        json.addProperty("token", SessionManager.getToken());
+        Future uploading = Ion.with(DetallesActivity.this)
+                .load("POST", Post_json.OBTENER_FOTOS)
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        ArrayList<JsonArray> photos = new ArrayList<>();
+                        JsonArray array = result.getAsJsonArray("photos");
+                        JsonElement element = result.get("token");
+                        String token = element.getAsString();
+                        SessionManager.setToken(token);
+                        for(int i = 0; i < array.size(); i++) {
+                            JsonElement value = array.get(i);
+                            JsonObject content = value.getAsJsonObject();
+                            JsonObject photo = content.getAsJsonObject("photo");
+                            JsonArray data = photo.getAsJsonArray("data");
+                            photos.add(data);
+                        }
+                        if(photos.size() > 0) {
+                            Process process = new Process(photos);
+                            try {
+                                images = process.execute().get();
+                            }
+                            catch (ExecutionException e1) {
+                                e1.printStackTrace();
+                            }
+                            catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
+                });
     }
 
     private void setearEstrellas(int calificacion){
