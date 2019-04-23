@@ -117,20 +117,18 @@ public class DetallesActivity extends AppCompatActivity {
         switcher.setInAnimation(in);
         switcher.setOutAnimation(out);
 
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        switcher.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
+            public void onClick(View v) {
                 if(images.size() > 0) {
                     currentIndex++;
-                    if (currentIndex == images.size()) {
+                    if (currentIndex >= images.size()) {
                         currentIndex = 0;
                     }
                     switcher.setImageDrawable(new BitmapDrawable(images.get(currentIndex)));
                 }
-                handler.postDelayed(this, 3000);
             }
-        }, 3000);
+        });
 
         switcher.setImageResource(R.drawable.store);
 

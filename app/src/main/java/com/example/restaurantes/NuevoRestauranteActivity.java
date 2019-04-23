@@ -80,6 +80,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     ImageSwitcher switcher;
     ImageButton editImageButton;
+    ImageButton openEditButton;
     EditText nombreEditText;
     EditText direccionEditText;
     EditText telefonoEditText;
@@ -126,6 +127,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         nombre = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");*/
         accion = getIntent().getStringExtra("accion");
+        System.out.println(accion);
 
         imagenesURIArrayList = new ArrayList<>();
 
@@ -181,29 +183,27 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         switcher.setInAnimation(in);
         switcher.setOutAnimation(out);
 
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(images.size() == 0) {
-                    switcher.setImageResource(R.drawable.store);
-                }
-                else {
-                    currentIndex++;
-                    if (currentIndex == images.size()) {
-                        currentIndex = 0;
-                    }
-                    switcher.setImageURI(images.get(currentIndex));
-                }
-                handler.postDelayed(this, 3000);
+        switcher.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if(images.size() > 0) {
+              currentIndex++;
+              if (currentIndex >= images.size()) {
+                currentIndex = 0;
+              }
+              switcher.setImageURI(images.get(currentIndex));
             }
-        }, 3000);
+          }
+        });
+
+        switcher.setImageResource(R.drawable.store);
 
         id = null;
         if (accion.equals("actualizar")){
             id = getIntent().getStringExtra("id");
         }
 
+        openEditButton = findViewById(R.id.openEditButton);
         agregarRestauranteBtn = findViewById(R.id.agregarBtn);
         editImageButton = findViewById(R.id.editImageButton);
         nombreEditText = findViewById(R.id.nombreRestauranteEditText);
@@ -236,6 +236,13 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         if (accion.equals("ver") || accion.equals("actualizar")){
             poblarFormulario();
         }
+
+        openEditButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                habilitarEdicion("actualizar");
+            }
+        });
     }
 
     public void sendImages(View view){
@@ -370,6 +377,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
     private void habilitarEdicion(String action){
         // deshabilitar edicion
         if (action.equals("nuevo")){
+            openEditButton.setVisibility(View.GONE);
+            editImageButton.setVisibility(View.VISIBLE);
             nombreEditText.setEnabled(true);
             direccionEditText.setEnabled(true);
             telefonoEditText.setEnabled(true);
@@ -392,6 +401,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                 checkBox.setEnabled(true);
             }
         } else if(action.equals("actualizar")){
+            editImageButton.setVisibility(View.VISIBLE);
             nombreEditText.setEnabled(true);
             direccionEditText.setEnabled(false);
             telefonoEditText.setEnabled(true);
@@ -415,6 +425,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             }
 
         } else  {
+            editImageButton.setVisibility(View.GONE);
             nombreEditText.setEnabled(false);
             direccionEditText.setEnabled(false);
             telefonoEditText.setEnabled(false);
@@ -441,14 +452,11 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         if(action.equals("nuevo")){
             agregarRestauranteBtn.setText("agregar Restaurante");
             agregarRestauranteBtn.setVisibility(View.VISIBLE);
-            editImageButton.setVisibility(View.VISIBLE);
         } else if(action.equals("actualizar")){
             agregarRestauranteBtn.setText("Actualizar");
             agregarRestauranteBtn.setVisibility(View.VISIBLE);
-            editImageButton.setVisibility(View.VISIBLE);
         } else{
             agregarRestauranteBtn.setVisibility(View.INVISIBLE);
-            editImageButton.setVisibility(View.VISIBLE);
         }
 
     }
@@ -866,8 +874,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                     } else {
                         Toast.makeText(this,"Restaurante actualizado", Toast.LENGTH_SHORT).show();
                         SessionManager.setToken(res.getString("token"));
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                        upload();
                     }
 
                 }

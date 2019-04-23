@@ -9,7 +9,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp">
+        android:layout_margin="20dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,12 +19,20 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/editImageButton"
-                android:onClick="sendImages"
+                android:id="@+id/openEditButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 app:srcCompat="@android:drawable/ic_menu_edit" />
+
+            <ImageButton
+                android:id="@+id/editImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:onClick="sendImages"
+                app:srcCompat="@android:drawable/ic_menu_camera" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,12 +66,12 @@
 
             <TextView
                 android:id="@+id/textView3"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Nombre:" />
+                android:text="Nombre:"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/nombreRestauranteEditText"
@@ -73,12 +83,12 @@
 
             <TextView
                 android:id="@+id/textView4"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Dirección:" />
+                android:text="Dirección:"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/direccionRestauranteEditText"
@@ -91,12 +101,12 @@
 
             <TextView
                 android:id="@+id/textView5"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Teléfono (Opcional):" />
+                android:text="Teléfono (Opcional):"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/telefonoRestauranteEditText"
@@ -108,12 +118,12 @@
 
             <TextView
                 android:id="@+id/textView6"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Página web (Opcional):" />
+                android:text="Página web (Opcional):"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/paginaWebRestauranteEditText"
@@ -125,34 +135,34 @@
 
             <TextView
                 android:id="@+id/textView7"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Tipo de comida  (Opcional):" />
+                android:text="Tipo de comida  (Opcional):"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/comboBoxVerticalLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"/>
+                android:orientation="vertical" />
 
             <TextView
                 android:id="@+id/textView9"
-                android:textStyle="bold"
-                android:textSize="15sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="Horario (Opcional):" />
+                android:text="Horario (Opcional):"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView10"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Lunes:" />
 
             <LinearLayout
@@ -174,11 +184,11 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
-                    android:inputType="none"
                     android:focusable="false"
-                    android:tag="LunesApertura"/>
+                    android:inputType="none"
+                    android:onClick="mostrarTimePicker"
+                    android:tag="LunesApertura" />
 
                 <TextView
                     android:id="@+id/textView13"
@@ -194,18 +204,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView11"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Martes:" />
 
             <LinearLayout
@@ -227,10 +237,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView15"
@@ -246,18 +256,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView16"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Miércoles:" />
 
             <LinearLayout
@@ -279,10 +289,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView19"
@@ -298,18 +308,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView21"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Jueves:" />
 
             <LinearLayout
@@ -331,10 +341,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView24"
@@ -350,18 +360,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView26"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Viernes:" />
 
             <LinearLayout
@@ -383,10 +393,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView29"
@@ -402,18 +412,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView31"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Sábado:" />
 
             <LinearLayout
@@ -435,10 +445,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView34"
@@ -454,18 +464,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/textView36"
-                android:background="#eeeeee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#eeeeee"
                 android:text="Domingo:" />
 
             <LinearLayout
@@ -487,10 +497,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
+                    android:focusable="false"
                     android:inputType="none"
-                    android:focusable="false" />
+                    android:onClick="mostrarTimePicker" />
 
                 <TextView
                     android:id="@+id/textView39"
@@ -506,29 +516,29 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:ems="10"
-                    android:onClick="mostrarTimePicker"
                     android:enabled="false"
-                    android:inputType="none"
                     android:focusable="false"
-                    android:tag="DomingoCierre"/>
+                    android:inputType="none"
+                    android:onClick="mostrarTimePicker"
+                    android:tag="DomingoCierre" />
 
             </LinearLayout>
 
             <Button
-                android:text="Agregar Restaurante"
                 android:id="@+id/agregarBtn"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/loginbuttonstylesecundary"
+                android:onClick="agregarRestaurante"
                 android:shadowColor="#A8A8A8"
                 android:shadowDx="0"
                 android:shadowDy="0"
                 android:shadowRadius="0"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="30dp"
-                android:onClick="agregarRestaurante"/>
+                android:text="Agregar Restaurante"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
 
         </LinearLayout>
     </ScrollView>
