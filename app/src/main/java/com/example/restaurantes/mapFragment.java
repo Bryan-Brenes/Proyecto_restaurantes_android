@@ -86,7 +86,7 @@ public class mapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         };
 
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-
+        Log.e("activity", getActivity().getClass().getSimpleName());
         return v;
     }
 
@@ -129,26 +129,34 @@ public class mapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
 
-        for (ModeloDatoRestaurante restaurante: MainActivity.restaurantes){
-            LatLng ubicacion = new LatLng(restaurante.getLatitud(), restaurante.getLongitud());
-            MarkerOptions markerOption = new MarkerOptions().position(ubicacion).title(restaurante.getNombre());
-            Marker marker = map.addMarker(markerOption);
-            mapaRestaurantesUbicaciones.put(marker, restaurante);
+        if (getActivity().getClass().getSimpleName().equals("MainActivity")){
+            for (ModeloDatoRestaurante restaurante: MainActivity.restaurantes){
+                LatLng ubicacion = new LatLng(restaurante.getLatitud(), restaurante.getLongitud());
+                MarkerOptions markerOption = new MarkerOptions().position(ubicacion).title(restaurante.getNombre());
+                Marker marker = map.addMarker(markerOption);
+                mapaRestaurantesUbicaciones.put(marker, restaurante);
 
-        }
-        if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            //locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-            //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, locationListener);
+            }
+            if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                //locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+                //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, locationListener);
             /*Criteria criteria = new Criteria();
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
             locationManager.requestSingleUpdate(criteria, locationListener, null);*/
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, locationListener);
-            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, locationListener);
+                currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
 
-        // revisar como actualizar la posición
-        LatLng posicionActual = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionActual,16));
+            // revisar como actualizar la posición
+            LatLng posicionActual = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionActual,16));
+        } else {
+            ModeloDatoRestaurante restaurante = DetallesActivity.restauranteSeleccionado;
+            LatLng ubicacion = new LatLng(restaurante.getLatitud(), restaurante.getLongitud());
+            MarkerOptions markerOption = new MarkerOptions().position(ubicacion).title(restaurante.getNombre());
+            Marker marker = map.addMarker(markerOption);
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacion,15));
+        }
 
     }
 

@@ -73,7 +73,7 @@ public class DetallesActivity extends AppCompatActivity {
     ImageView dineroTresComentarioImageView;
     ModeloDatoComentario comentarioUsuario;
 
-    ModeloDatoRestaurante restauranteSeleccionado;
+    public static ModeloDatoRestaurante restauranteSeleccionado;
     ArrayList<ModeloDatoComentario> comentarios;
     CustomArrayAdapterComentarios adapter;
 
