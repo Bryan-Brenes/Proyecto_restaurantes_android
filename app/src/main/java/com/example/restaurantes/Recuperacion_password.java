@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,10 +28,14 @@ public class Recuperacion_password extends AppCompatActivity {
     Button enviarCorreoBtn;
     Button resetBtn;
 
+    private MixpanelAPI mixpanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recuperacion_password);
+
+        mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -38,6 +43,14 @@ public class Recuperacion_password extends AppCompatActivity {
         codeEditText = findViewById(R.id.codigoEditText);
         enviarCorreoBtn = findViewById(R.id.enviarCorreoBtn);
         resetBtn = findViewById(R.id.resetPasswordBtn);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mixpanel != null) {
+            mixpanel.flush();
+        }
+        super.onDestroy();
     }
 
     public void ResetPassword(View view){

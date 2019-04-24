@@ -32,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private String email;
     private String nombre;*/
     public static ArrayList<ModeloDatoRestaurante> restaurantes;
+
+    private MixpanelAPI mixpanel;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -116,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
 
         obtenerRestaurantes();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mixpanel != null) {
+            mixpanel.flush();
+        }
+        super.onDestroy();
     }
 
     @Override

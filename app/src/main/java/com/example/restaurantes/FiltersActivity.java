@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,10 +49,14 @@ public class FiltersActivity extends AppCompatActivity {
 
   private Button save;
 
+  private MixpanelAPI mixpanel;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_filters);
+
+    mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
     layoutFoods = findViewById(R.id.layoutFoods);
 
@@ -161,6 +166,14 @@ public class FiltersActivity extends AppCompatActivity {
       }
     });
 
+  }
+
+  @Override
+  protected void onDestroy() {
+    if(mixpanel != null) {
+      mixpanel.flush();
+    }
+    super.onDestroy();
   }
 
   public static JSONObject getFilters(int lat, int log, Context context) {

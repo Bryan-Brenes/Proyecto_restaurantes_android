@@ -46,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.gson.JsonObject;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -104,6 +106,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
     Button agregarRestauranteBtn;
 
+    private MixpanelAPI mixpanel;
 
     ArrayList<String> tiposComida;
     ArrayList<CheckBox> checkBoxesTiposComida;
@@ -123,6 +126,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_restaurante);
+
+        mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
         /*token = getIntent().getStringExtra("token");
         nombre = getIntent().getStringExtra("name");
@@ -244,6 +249,14 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                 habilitarEdicion("actualizar");
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mixpanel != null) {
+            mixpanel.flush();
+        }
+        super.onDestroy();
     }
 
     public void sendImages(View view){

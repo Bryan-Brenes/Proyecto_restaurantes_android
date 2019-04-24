@@ -28,6 +28,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class DetallesActivity extends AppCompatActivity {
+
+    private MixpanelAPI mixpanel;
 
     ImageSwitcher switcher;
     Handler handler;
@@ -83,6 +86,9 @@ public class DetallesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles);
+
+        mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
+
         comentarios = new ArrayList<>();
 
         restauranteSeleccionado = RestListTabFragment.restauranteSeleccionado;
@@ -211,6 +217,14 @@ public class DetallesActivity extends AppCompatActivity {
 
         obtainPhotos();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mixpanel != null) {
+            mixpanel.flush();
+        }
+        super.onDestroy();
     }
 
     private void obtainPhotos() {
