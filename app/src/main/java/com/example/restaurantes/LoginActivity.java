@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.mixpanel.android.mpmetrics.MixpanelAPI;
+
 import io.fabric.sdk.android.Fabric;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,11 +17,24 @@ import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static final String MIXPANEL_TOKEN = "d45f6bb62c956f7c15c973e7e5ed1668";
+
+    private MixpanelAPI mixpanel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
+        mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
         setContentView(R.layout.login_activity);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mixpanel != null) {
+            mixpanel.flush();
+        }
+        super.onDestroy();
     }
 
     public void abrirPantallas(View view){

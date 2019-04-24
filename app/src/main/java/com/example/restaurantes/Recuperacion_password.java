@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,8 +87,10 @@ public class Recuperacion_password extends AppCompatActivity {
                 e.printStackTrace();
             } catch (InterruptedException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (ExecutionException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -123,8 +127,10 @@ public class Recuperacion_password extends AppCompatActivity {
                 e.printStackTrace();
             } catch (InterruptedException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (ExecutionException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (Exception e){
                 e.printStackTrace();
             }
