@@ -1,8 +1,10 @@
 package com.example.restaurantes;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private String email;
     private String nombre;*/
     public static ArrayList<ModeloDatoRestaurante> restaurantes;
+    public static Location ubicacionActual;
 
     private MixpanelAPI mixpanel;
 
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ubicacionActual = null;
+
         mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
         JSONObject props = new JSONObject();
@@ -85,12 +90,40 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Log.e("location", String.format("Latitud: %f\nLongitud: %f", location.getLatitude(),location.getLongitude()));
+                ubicacionActual = location;
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_COARSE_LOCATION
                 }, 10);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
             }
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
 
         restaurantes = new ArrayList<>();
@@ -150,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("location", "entro al if de on request");
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         Log.e("location", "Si ddieron el permiso");
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                     }
                 }
         }

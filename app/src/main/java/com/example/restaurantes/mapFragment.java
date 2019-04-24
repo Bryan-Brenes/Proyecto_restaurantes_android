@@ -8,6 +8,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -66,7 +67,7 @@ public class mapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-
+                Log.e("location", String.format("Latitud: %f\nLongitud: %f", location.getLatitude(),location.getLongitude()));
             }
 
             @Override
@@ -148,8 +149,17 @@ public class mapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
 
             // revisar como actualizar la posición
-            LatLng posicionActual = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionActual,16));
+
+            LatLng posicionActual = null;
+            if (LoginActivity.ubicacionActual != null){
+                Log.e("location", " ubicacion no es null");
+                posicionActual = new LatLng(LoginActivity.ubicacionActual.getLatitude(), LoginActivity.ubicacionActual.getLongitude());
+            } else {
+                Log.e("location", " ubicacion es null");
+                posicionActual = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            }
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionActual,15));
         } else {
             ModeloDatoRestaurante restaurante = DetallesActivity.restauranteSeleccionado;
             LatLng ubicacion = new LatLng(restaurante.getLatitud(), restaurante.getLongitud());

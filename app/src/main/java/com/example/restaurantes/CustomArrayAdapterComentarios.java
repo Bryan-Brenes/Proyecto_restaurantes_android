@@ -70,4 +70,9 @@ public class CustomArrayAdapterComentarios extends ArrayAdapter<ModeloDatoComent
         // Return the completed view to render on screen
         return convertView;
     }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
 }
