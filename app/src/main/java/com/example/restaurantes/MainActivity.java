@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             obj.put("token", SessionManager.getToken());
             obj.put("email", SessionManager.getEmail());
-            JSONObject filters = new JSONObject();
+            JSONObject filters = FiltersActivity.getFilters(LoginActivity.ubicacionActual.getLatitude(), LoginActivity.ubicacionActual.getLongitude(),this);
             obj.put("filters", filters);
 
             Post_json post = new Post_json();

@@ -186,7 +186,7 @@ public class FiltersActivity extends AppCompatActivity {
     super.onDestroy();
   }
 
-  public static JSONObject getFilters(int lat, int log, Context context) {
+  public static JSONObject getFilters(double lat, double log, Context context) {
     SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
     JSONObject filters = new JSONObject();
     try {
