@@ -1,0 +1,29 @@
+\babel@toc {spanish}{}
+\contentsline {section}{\numberline {1}Introducci\IeC {\'o}n}{3}
+\contentsline {section}{\numberline {2}Wireframes}{3}
+\contentsline {subsection}{\numberline {2.1}Pantalla inicial}{3}
+\contentsline {subsection}{\numberline {2.2}Pantalla de registro}{3}
+\contentsline {subsection}{\numberline {2.3}Pantalla de login}{4}
+\contentsline {subsection}{\numberline {2.4}Pantalla de restablecimiento de contrase\IeC {\~n}a}{5}
+\contentsline {subsection}{\numberline {2.5}Pantalla principal}{5}
+\contentsline {subsection}{\numberline {2.6}Pantalla para detalles del restaurante}{5}
+\contentsline {section}{\numberline {3}Dise\IeC {\~n}o de alto nivel de la aplicaci\IeC {\'o}n}{7}
+\contentsline {section}{\numberline {4}Web service}{8}
+\contentsline {subsection}{\numberline {4.1}Usuarios}{8}
+\contentsline {subsubsection}{\numberline {4.1.1}Registro de usuario: /createUser}{8}
+\contentsline {subsubsection}{\numberline {4.1.2}Registro de usuario: /loginUser}{8}
+\contentsline {subsubsection}{\numberline {4.1.3}Registro de usuario: /requestCode}{9}
+\contentsline {subsubsection}{\numberline {4.1.4}Registro de usuario: /resetPassword}{9}
+\contentsline {subsubsection}{\numberline {4.1.5}Registro de usuario: /updateName}{10}
+\contentsline {subsubsection}{\numberline {4.1.6}Registro de usuario: /updatePhoto}{10}
+\contentsline {subsection}{\numberline {4.2}Comidas}{11}
+\contentsline {subsubsection}{\numberline {4.2.1}Registro de usuario: /getFoods}{11}
+\contentsline {subsection}{\numberline {4.3}Restaurantes}{11}
+\contentsline {subsubsection}{\numberline {4.3.1}Registro de usuario: /createRestaurant}{11}
+\contentsline {subsubsection}{\numberline {4.3.2}Registro de usuario: /updateRestaurant}{12}
+\contentsline {subsubsection}{\numberline {4.3.3}Registro de usuario: /createOpinion}{12}
+\contentsline {subsubsection}{\numberline {4.3.4}Registro de usuario: /getOpinions}{13}
+\contentsline {subsubsection}{\numberline {4.3.5}Registro de usuario: /addPhoto}{13}
+\contentsline {subsubsection}{\numberline {4.3.6}Registro de usuario: /getPhotos}{14}
+\contentsline {subsubsection}{\numberline {4.3.7}Registro de usuario: /getRestaurants}{14}
+\contentsline {section}{\numberline {5}Interacci\IeC {\'o}n con sistemas externos}{15}
