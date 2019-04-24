@@ -601,8 +601,8 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
                 // json de direccion
                 JSONObject direccion = new JSONObject();
-                direccion.put("lat", currentLocation.getLatitude());
-                direccion.put("long", currentLocation.getLongitude());
+                direccion.put("lat", LoginActivity.ubicacionActual.getLatitude());
+                direccion.put("long", LoginActivity.ubicacionActual.getLongitude());
                 direccion.put("direction", direccionEditText.getText().toString());
                 obj.put("address", direccion);
 
