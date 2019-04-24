@@ -35,6 +35,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonElement;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -302,9 +303,11 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         catch (IOException e) {
             e.printStackTrace();
+            Crashlytics.logException(e);
         }
         finally {
             if(outputStream != null) {
@@ -313,6 +316,7 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                 }
                 catch (IOException e) {
                     e.printStackTrace();
+                    Crashlytics.logException(e);
                 }
             }
         }
@@ -506,8 +510,10 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             e.printStackTrace();
         } catch (InterruptedException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (ExecutionException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -715,8 +721,10 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
                 e.printStackTrace();
             } catch (InterruptedException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (ExecutionException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -887,8 +895,10 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
             e.printStackTrace();
         } catch (InterruptedException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (ExecutionException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (Exception e){
             e.printStackTrace();
         }

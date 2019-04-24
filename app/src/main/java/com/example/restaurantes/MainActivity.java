@@ -31,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -239,8 +241,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (InterruptedException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (ExecutionException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (Exception e){
             e.printStackTrace();
         }

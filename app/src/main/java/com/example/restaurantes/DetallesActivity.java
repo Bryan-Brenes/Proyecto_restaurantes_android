@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -225,28 +226,35 @@ public class DetallesActivity extends AppCompatActivity {
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        ArrayList<JsonArray> photos = new ArrayList<>();
-                        JsonArray array = result.getAsJsonArray("photos");
-                        JsonElement element = result.get("token");
-                        String token = element.getAsString();
-                        SessionManager.setToken(token);
-                        for(int i = 0; i < array.size(); i++) {
-                            JsonElement value = array.get(i);
-                            JsonObject content = value.getAsJsonObject();
-                            JsonObject photo = content.getAsJsonObject("photo");
-                            JsonArray data = photo.getAsJsonArray("data");
-                            photos.add(data);
+                        if(e != null) {
+                            Crashlytics.logException(e);
                         }
-                        if(photos.size() > 0) {
-                            Process process = new Process(photos);
-                            try {
-                                images = process.execute().get();
+                        else {
+                            ArrayList<JsonArray> photos = new ArrayList<>();
+                            JsonArray array = result.getAsJsonArray("photos");
+                            JsonElement element = result.get("token");
+                            String token = element.getAsString();
+                            SessionManager.setToken(token);
+                            for(int i = 0; i < array.size(); i++) {
+                                JsonElement value = array.get(i);
+                                JsonObject content = value.getAsJsonObject();
+                                JsonObject photo = content.getAsJsonObject("photo");
+                                JsonArray data = photo.getAsJsonArray("data");
+                                photos.add(data);
                             }
-                            catch (ExecutionException e1) {
-                                e1.printStackTrace();
-                            }
-                            catch (InterruptedException e1) {
-                                e1.printStackTrace();
+                            if(photos.size() > 0) {
+                                Process process = new Process(photos);
+                                try {
+                                    images = process.execute().get();
+                                }
+                                catch (ExecutionException e1) {
+                                    e1.printStackTrace();
+                                    Crashlytics.logException(e1);
+                                }
+                                catch (InterruptedException e1) {
+                                    e1.printStackTrace();
+                                    Crashlytics.logException(e1);
+                                }
                             }
                         }
                     }
@@ -390,8 +398,10 @@ public class DetallesActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (InterruptedException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (ExecutionException e){
                 e.printStackTrace();
+                Crashlytics.logException(e);
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -530,8 +540,10 @@ public class DetallesActivity extends AppCompatActivity {
             e.printStackTrace();
         } catch (InterruptedException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (ExecutionException e){
             e.printStackTrace();
+            Crashlytics.logException(e);
         } catch (Exception e){
             e.printStackTrace();
         }
