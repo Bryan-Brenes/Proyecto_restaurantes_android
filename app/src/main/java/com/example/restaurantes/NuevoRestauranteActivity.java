@@ -129,6 +129,16 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
 
         mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
+        JSONObject props = new JSONObject();
+        try {
+            props.put("Usuario", SessionManager.getEmail());
+            props.put("Actividad", "ModificarRestaurante");
+            mixpanel.track("Movimiento", props);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         /*token = getIntent().getStringExtra("token");
         nombre = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");*/
@@ -293,12 +303,26 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
     private void obtainImages(Intent data) {
         if(data.getClipData() != null) {
             int count = data.getClipData().getItemCount();
+            trackTotalImages(count);
             for(int i = 0; i < count; i++) {
                 selectImage(data.getClipData().getItemAt(i).getUri(), i);
             }
         }
         else if(data.getData() != null) {
+            trackTotalImages(1);
             selectImage(data.getData(), 0);
+        }
+    }
+
+    private void trackTotalImages(int images) {
+        JSONObject props = new JSONObject();
+        try {
+            props.put("Usuario", SessionManager.getEmail());
+            props.put("Imagenes Subidas", images);
+            mixpanel.track("Imagenes", props);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -344,11 +368,13 @@ public class NuevoRestauranteActivity extends AppCompatActivity implements TimeP
         builder.setMultipartParameter("id", id);
         builder.setMultipartParameter("token", SessionManager.getToken());
         builder.setMultipartParameter("email", SessionManager.getEmail());
+        mixpanel.timeEvent("Subir fotos");
         Future uploading = builder
             .asJsonObject()
             .setCallback(new FutureCallback<JsonObject>() {
               @Override
               public void onCompleted(Exception e, JsonObject result) {
+                mixpanel.track("Subir fotos");
                 if(result != null) {
                   JsonElement element = result.get("status");
                   String status = element.getAsString();

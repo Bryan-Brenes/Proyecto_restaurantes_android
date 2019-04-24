@@ -75,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
         mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
+        JSONObject props = new JSONObject();
+        try {
+            props.put("Usuario", SessionManager.getEmail());
+            props.put("Actividad", "ListaRestaurantes");
+            mixpanel.track("Movimiento", props);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{
@@ -157,7 +167,9 @@ public class MainActivity extends AppCompatActivity {
 
             Post_json post = new Post_json();
             DatosConsulta datos = new DatosConsulta(Post_json.OBTENER_RESTAURANTES, obj);
+            mixpanel.timeEvent("Obtener restaurantes");
             JSONObject res = post.execute(datos).get();
+            mixpanel.track("Obtener Restaurantes");
 
             if (res != null){
                 Log.e("rest", res.toString());

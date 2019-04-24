@@ -58,6 +58,16 @@ public class FiltersActivity extends AppCompatActivity {
 
     mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
+    JSONObject props = new JSONObject();
+    try {
+      props.put("Usuario", SessionManager.getEmail());
+      props.put("Actividad", "Filtros");
+      mixpanel.track("Movimiento", props);
+    }
+    catch (JSONException e) {
+      e.printStackTrace();
+    }
+
     layoutFoods = findViewById(R.id.layoutFoods);
 
     minPrice = findViewById(R.id.minPrice);

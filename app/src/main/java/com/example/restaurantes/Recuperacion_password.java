@@ -37,6 +37,16 @@ public class Recuperacion_password extends AppCompatActivity {
 
         mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
+        JSONObject props = new JSONObject();
+        try {
+            props.put("Usuario", SessionManager.getEmail());
+            props.put("Actividad", "RecuperarContrasena");
+            mixpanel.track("Movimiento", props);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         confirmEditText = findViewById(R.id.confirmPasswordEditText);
@@ -121,7 +131,9 @@ public class Recuperacion_password extends AppCompatActivity {
 
                 Post_json post = new Post_json();
                 DatosConsulta datos = new DatosConsulta(Post_json.REQUEST_CODE, obj);
+                mixpanel.timeEvent("Envio de Correo");
                 JSONObject res = post.execute(datos).get();
+                mixpanel.track("Envio de Correo");
 
                 if (res != null){
                     Log.e("url", res.toString());

@@ -89,6 +89,16 @@ public class DetallesActivity extends AppCompatActivity {
 
         mixpanel = MixpanelAPI.getInstance(getApplicationContext(), LoginActivity.MIXPANEL_TOKEN);
 
+        JSONObject props = new JSONObject();
+        try {
+            props.put("Usuario", SessionManager.getEmail());
+            props.put("Actividad", "DetalleRestaurante");
+            mixpanel.track("Movimiento", props);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         comentarios = new ArrayList<>();
 
         restauranteSeleccionado = RestListTabFragment.restauranteSeleccionado;
@@ -233,6 +243,7 @@ public class DetallesActivity extends AppCompatActivity {
         json.addProperty("email", SessionManager.getEmail());
         json.addProperty("id", restauranteSeleccionado.getIdRestaurante());
         json.addProperty("token", SessionManager.getToken());
+        mixpanel.timeEvent("Descargar Fotos");
         Future uploading = Ion.with(DetallesActivity.this)
                 .load("POST", Post_json.OBTENER_FOTOS)
                 .setJsonObjectBody(json)
@@ -240,6 +251,7 @@ public class DetallesActivity extends AppCompatActivity {
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
+                        mixpanel.track("Descargar Fotos");
                         if(e != null) {
                             Crashlytics.logException(e);
                         }
@@ -259,7 +271,9 @@ public class DetallesActivity extends AppCompatActivity {
                             if(photos.size() > 0) {
                                 Process process = new Process(photos);
                                 try {
+                                    mixpanel.timeEvent("Procesar Fotos");
                                     images = process.execute().get();
+                                    mixpanel.track("Procesar Fotos");
                                 }
                                 catch (ExecutionException e1) {
                                     e1.printStackTrace();
