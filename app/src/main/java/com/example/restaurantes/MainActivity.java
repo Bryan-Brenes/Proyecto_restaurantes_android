@@ -195,13 +195,14 @@ public class MainActivity extends AppCompatActivity {
         try{
             obj.put("token", SessionManager.getToken());
             obj.put("email", SessionManager.getEmail());
-            JSONObject filters = FiltersActivity.getFilters(LoginActivity.ubicacionActual.getLatitude(), LoginActivity.ubicacionActual.getLongitude(),this);
+            JSONObject filters = FiltersActivity.getFilters(0, 0,this);
             obj.put("filters", filters);
-
+            System.out.println(filters);
             Post_json post = new Post_json();
             DatosConsulta datos = new DatosConsulta(Post_json.OBTENER_RESTAURANTES, obj);
             mixpanel.timeEvent("Obtener restaurantes");
             JSONObject res = post.execute(datos).get();
+            System.out.println(res);
             mixpanel.track("Obtener Restaurantes");
 
             if (res != null){
@@ -229,10 +230,15 @@ public class MainActivity extends AppCompatActivity {
                         String direccion = address.getString("direction");
 
                         // obtener foods
-                        JSONArray foodsArray = restActual.getJSONArray("foods");
                         ArrayList<String> foods = new ArrayList<>();
-                        for (int j = 0; j < foodsArray.length(); j++){
-                            foods.add(foodsArray.getString(j));
+                        try {
+                            JSONArray foodsArray = restActual.getJSONArray("foods");
+                            for (int j = 0; j < foodsArray.length(); j++){
+                                foods.add(foodsArray.getString(j));
+                            }
+                        }
+                        catch (Exception e) {
+
                         }
 
                         // obtener id
